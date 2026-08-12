@@ -3,14 +3,14 @@
 
 :root {
   /* Background & Gradient */
-  --color-bg-gradient-start: #0070BD;
-  --color-bg-gradient-end: #00A86B;
+  --color-bg-gradient-start: #0070bd;
+  --color-bg-gradient-end: #00a86b;
 
   /* Accent Colors */
-  --color-gold: #FFB300;
-  --color-gold-dark: #FF8C00;
-  --color-purple: #7C3AED;
-  --color-purple-dark: #4F46E5;
+  --color-gold: #ffb300;
+  --color-gold-dark: #ff8c00;
+  --color-purple: #7c3aed;
+  --color-purple-dark: #4f46e5;
 
   /* Glass & Surface */
   --color-glass-card: rgba(255, 255, 255, 0.15);
@@ -19,7 +19,7 @@
   --color-tab-bg: rgba(0, 0, 0, 0.3);
 
   /* Text Colors */
-  --color-text-primary: #FFFFFF;
+  --color-text-primary: #ffffff;
   --color-text-secondary: rgba(255, 255, 255, 0.8);
   --color-text-muted: rgba(255, 255, 255, 0.6);
 
@@ -33,7 +33,7 @@
   --spacing-2xl: 24px;
 
   /* Typography */
-  --font-system: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-system: system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-size-xs: 11px;
   --font-size-sm: 12px;
   --font-size-body: 13px;
