@@ -17,3 +17,12 @@
 **Motion:** Entrance-only animations (fadeSlideUp staggered). No looping glow on content. Particles are decorative.
 **Typography:** System fonts only. Bold/heavy weights for titles. Never custom typefaces.
 **Winner sample:** docs/design-system/samples/index.html (variant-c — Metro Adventurer direction)
+
+## Architecture Context
+
+**Stack:** Vue 3 + Vite + Pinia + Vue Router (TypeScript)
+**App root:** `metro-play-vue/` (separate from existing HTML prototype)
+**State:** `src/stores/offPeak.ts` — Pinia store for all Module 1 game state
+**Mock API:** `src/api/mockApi.ts` — async functions, no real network calls
+**ADRs:** docs/architecture-decision-record/ADR-0001 through ADR-0005
+**C4:** docs/architecture/c4-system-context.puml, c4-container.puml

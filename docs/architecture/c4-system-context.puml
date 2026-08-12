@@ -1,0 +1,18 @@
+@startuml c4-system-context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(commuter, "台北通勤族", "MRT commuter, uses mobile web app to commit to off-peak travel and predict ridership")
+
+System(metroPlay, "Metro Go Pass Web App", "Vue 3 + Vite PWA. Module 1: Off-Peak Prediction Game")
+
+System_Ext(localStorage, "Browser localStorage", "Persists game state, points balance, daily pledge/prediction")
+
+System_Ext(existingProto, "Existing HTML Prototype", "Pure HTML/CSS/JS demo (kept for fallback)")
+
+Rel(commuter, metroPlay, "Uses", "Mobile browser (HTTPS / file://)")
+
+Rel(metroPlay, localStorage, "Reads/writes game state", "pinia-plugin-persistedstate")
+
+@enduml

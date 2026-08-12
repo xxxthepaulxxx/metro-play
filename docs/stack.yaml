@@ -1,0 +1,46 @@
+# docs/stack.yaml
+# Technology stack for Metro Go Pass Module 1
+
+version: "1.0"
+
+project: metro-off-peak-prediction
+
+frontend:
+  framework: vue3
+  bundler: vite
+  language: typescript
+  state: pinia
+  router: vue-router
+  persistence: pinia-plugin-persistedstate
+  styling: css-modules  # or tailwind (decision deferred)
+
+backend: none  # Mock API only for hackathon
+
+deployment:
+  strategy: static
+  entry: index.html
+  dev-server: vite preview
+  build: vite build
+
+architecture:
+  decisions:
+    - ADR-0001-vue3-vite-framework
+    - ADR-0002-pinia-state-management
+    - ADR-0003-mock-async-api
+    - ADR-0004-localstorage-persistence
+    - ADR-0005-rule-based-prediction-model
+
+  diagrams:
+    - docs/architecture/c4-system-context.puml
+    - docs/architecture/c4-container.puml
+
+key_directories:
+  app_root: metro-play-vue/
+  entry: src/main.ts
+  router: src/router/index.ts
+  store: src/stores/offPeak.ts
+  api: src/api/mockApi.ts
+  data: src/data/mockData.ts
+  utils: src/utils/offPeakCalculator.ts
+  components: src/components/
+  views: src/views/

@@ -1,0 +1,34 @@
+@startuml c4-container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(commuter, "通勤族", "MRT commuter")
+
+System_Boundary(metroPlay, "Metro Go Pass") {
+  Container(appShell, "App Shell", "Vue 3 / App.vue", "Global tab bar, gradient background, floating particles, Vue Router outlet")
+
+  Container(module1, "Module 1 Views", "Vue 3 SFCs", "Module1Home, GameA, GameB, SettlementOverlay components")
+
+  Container(store, "offPeak Store", "Pinia", "Game state: pledge, prediction, settlement, balance, carbonFundPool")
+
+  Container(mockApi, "Mock API", "TypeScript async functions", "Simulates commit, predict, verify, settle with realistic 300-800ms delay")
+
+  Container(mockData, "Mock Data", "TypeScript", "Static ridership arrays, off-peak window calculation, jitter function")
+}
+
+ContainerDb(ls, "localStorage", "Browser Web Storage API", "Persisted Pinia store state (JSON)")
+
+Rel(commuter, appShell, "Opens app", "HTTPS / file:// in mobile browser")
+
+Rel(appShell, module1, "Routes to", "Vue Router")
+
+Rel(module1, store, "Reads state / dispatches actions", "Vue composable")
+
+Rel(store, mockApi, "Calls async functions", "import { commitPledge, ... }")
+
+Rel(mockApi, mockData, "Reads ridership data & calculates", "import { mockData, getActualRidership }")
+
+Rel(store, ls, "Persists after mutations", "pinia-plugin-persistedstate auto-write")
+
+@enduml
