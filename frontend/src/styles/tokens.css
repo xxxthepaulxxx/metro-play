@@ -1,0 +1,67 @@
+/* Design tokens — seeded from docs/design-system/tokens.md */
+/* DO NOT edit by hand. Update tokens.md and re-seed. */
+
+:root {
+  /* Background & Gradient */
+  --color-bg-gradient-start: #0070BD;
+  --color-bg-gradient-end: #00A86B;
+
+  /* Accent Colors */
+  --color-gold: #FFB300;
+  --color-gold-dark: #FF8C00;
+  --color-purple: #7C3AED;
+  --color-purple-dark: #4F46E5;
+
+  /* Glass & Surface */
+  --color-glass-card: rgba(255, 255, 255, 0.15);
+  --color-glass-combo: rgba(0, 20, 40, 0.55);
+  --color-glass-border: rgba(255, 255, 255, 0.3);
+  --color-tab-bg: rgba(0, 0, 0, 0.3);
+
+  /* Text Colors */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: rgba(255, 255, 255, 0.8);
+  --color-text-muted: rgba(255, 255, 255, 0.6);
+
+  /* Spacing */
+  --spacing-base: 4px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-2xl: 24px;
+
+  /* Typography */
+  --font-system: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-body: 13px;
+  --font-size-subtitle: 13px;
+  --font-size-section: 20px;
+  --font-size-hero: 28px;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-weight-extra-bold: 800;
+  --font-weight-black: 900;
+
+  /* Motion */
+  --duration-fast: 0.15s;
+  --duration-normal: 0.2s;
+  --duration-slow: 0.35s;
+  --duration-float: 6s;
+
+  --timing-ease: ease;
+  --timing-ease-out: ease-out;
+
+  /* Radius */
+  --radius-card: 16px;
+  --radius-pill: 20px;
+  --radius-button: 24px;
+
+  /* Filters */
+  --blur-card: blur(12px);
+  --blur-tab: blur(20px);
+}
