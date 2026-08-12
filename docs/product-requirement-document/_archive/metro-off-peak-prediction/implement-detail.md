@@ -1,3 +1,8 @@
+---
+status: sliced
+sliced_at: 2026-08-12
+---
+
 # Implement Detail: metro-off-peak-prediction (Vue 3 + Vite Build)
 
 ## 1. Overview

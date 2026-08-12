@@ -1,3 +1,8 @@
+---
+status: sliced
+sliced_at: 2026-08-12
+---
+
 # 離峰減碳大作戰 — Off-Peak Prediction Game (Module 1)
 
 ## Project Context
