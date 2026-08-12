@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# CI-parity pre-push hook.
+# Runs ci-checks.sh for every stack touched by the push — same script CI runs.
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+CHANGED=$(git diff --name-only HEAD@{u} HEAD 2>/dev/null || git diff --name-only "$(git rev-list --max-parents=0 HEAD)" HEAD)
+
+run_checks() {
+  local surface="$1"
+  if echo "$CHANGED" | grep -q "^${surface}/"; then
+    echo "=== pre-push: ${surface} checks ==="
+    bash "${REPO_ROOT}/${surface}/scripts/ci-checks.sh"
+  fi
+}
+
+run_checks "frontend"
+
+echo "pre-push checks passed"

@@ -1,0 +1,76 @@
+name: PR Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  # ---- BEGIN frontend ----
+  frontend-checks:
+    name: Frontend — lint / type / test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --frozen-lockfile
+        working-directory: frontend
+      - run: bash scripts/ci-checks.sh
+        working-directory: frontend
+
+  frontend-mutation:
+    name: Frontend — mutation (diff-scoped)
+    runs-on: ubuntu-latest
+    needs: frontend-checks
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --frozen-lockfile
+        working-directory: frontend
+      - run: bash scripts/mutation.sh "origin/${{ github.base_ref }}"
+        working-directory: frontend
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-report
+          path: frontend/reports/
+
+  frontend-build:
+    name: Frontend — Docker image build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - run: docker build frontend/ -t metro-play-frontend:ci
+  # ---- END frontend ----
+
+  e2e:
+    name: E2E smoke
+    runs-on: ubuntu-latest
+    needs: [frontend-build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: e2e/package-lock.json
+      - run: npm ci --frozen-lockfile
+        working-directory: e2e
+      - run: npx playwright install --with-deps chromium
+        working-directory: e2e
+      - run: docker compose up -d --build
+      - run: sleep 5 && npm test
+        working-directory: e2e
+        env:
+          BASE_URL: http://localhost:5173
+      - run: docker compose down
