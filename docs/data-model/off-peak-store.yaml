@@ -1,0 +1,248 @@
+---
+# ODCS v3.1 Data Model: OffPeakStore
+# Source: Pinia persisted store (localStorage key: `off-peak-store`)
+# Description: User game session state for metro off-peak prediction feature.
+#              All fields persist to browser localStorage via Pinia's persistedstate plugin.
+#              Future backend mapping: user_game_sessions table (one row per user per day).
+
+title: OffPeakStore
+description: >-
+  Pinia store state shape representing user game session data.
+  Persisted to localStorage and serves as the schema draft for future backend implementation.
+version: '1.0.0'
+persistence:
+  type: localStorage
+  key: off-peak-store
+  plugin: pinia-persistedstate
+
+entities:
+  OffPeakStore:
+    description: Root game session state
+    fields:
+      balance:
+        type: integer
+        constraints:
+          minimum: 0
+        description: User's current point balance
+        example: 1000
+
+      carbonFundPool:
+        type: integer
+        constraints:
+          minimum: 0
+        description: Accumulated forfeited stakes (community metric, never decreases)
+        example: 500
+
+      pledge:
+        type: object
+        description: Game A state (point staking commitment)
+        fields:
+          staked:
+            type: integer
+            constraints:
+              minimum: 0
+              maximum: "{{ balance }}"
+            description: Points staked in Game A (must be <= balance)
+            atomicGuard: true
+            example: 100
+
+          committed:
+            type: boolean
+            description: Whether user has committed a pledge for today
+            example: true
+
+          enteredAt:
+            type: string | null
+            format: iso8601
+            description: Gate tap timestamp (ISO8601 format or null if not committed)
+            example: "2026-08-11T08:30:00Z"
+
+          outcome:
+            type: enum
+            enumValues:
+              - success
+              - forfeit
+              - pending
+              - null
+            description: Result of Game A (success/forfeit/pending/null if not settled)
+            example: success
+
+      prediction:
+        type: object
+        description: Game B state (ridership prediction submission)
+        fields:
+          range:
+            type: object
+            description: Predicted ridership window
+            fields:
+              min:
+                type: integer
+                constraints:
+                  minimum: 0
+                description: Lower bound of ridership prediction
+                example: 800
+
+              max:
+                type: integer
+                constraints:
+                  greaterThan: "{{ prediction.range.min }}"
+                description: Upper bound of ridership prediction (must be > min)
+                example: 1200
+
+          submitted:
+            type: boolean
+            description: Whether prediction has been submitted
+            example: true
+
+          outcome:
+            type: enum
+            enumValues:
+              - correct
+              - wrong
+              - pending
+              - null
+            description: Result of Game B (correct/wrong/pending/null if not settled)
+            example: correct
+
+      settlement:
+        type: object
+        description: Daily settlement state (computed once per day)
+        fields:
+          done:
+            type: boolean
+            description: Whether settlement has been calculated for today
+            guard: "settle() may only run once per day (settlement.done === false)"
+            example: true
+
+          combo:
+            type: boolean
+            description: Whether combo multiplier was applied (both games won)
+            example: true
+
+          totalReward:
+            type: integer
+            description: Total points awarded (0 on forfeit, > 0 on success)
+            example: 250
+
+          badge:
+            type: string | null
+            description: Badge slug if earned (e.g. carbon-hero, null if not earned)
+            example: "carbon-hero"
+
+      offPeakWindow:
+        type: object
+        description: Today's off-peak time window
+        fields:
+          start:
+            type: string
+            format: "HH:MM"
+            description: Off-peak window start time
+            example: "10:00"
+
+          end:
+            type: string
+            format: "HH:MM"
+            description: Off-peak window end time
+            example: "16:00"
+
+      activityLog:
+        type: array
+        maxItems: 100
+        evictionPolicy: "oldest first"
+        items:
+          type: object
+          description: Audit log entry
+          fields:
+            ts:
+              type: string
+              format: iso8601
+              description: Timestamp of action (ISO8601)
+              example: "2026-08-11T08:30:45Z"
+
+            action:
+              type: string
+              description: Action name (e.g. commitPledge, submitPrediction, settle)
+              example: "commitPledge"
+
+            payload:
+              type: object
+              description: Input parameters for the action
+              additionalProperties: true
+              example:
+                staked: 100
+
+            result:
+              type: object
+              description: Action result/outcome
+              additionalProperties: true
+              example:
+                success: true
+                newBalance: 900
+
+invariants:
+  - name: pledge_staking_atomic
+    description: >-
+      pledge.staked must be deducted from balance atomically in commitPledge.
+      Prevents race conditions and ensures balance consistency.
+    scope: [balance, pledge.staked]
+
+  - name: settlement_single_run
+    description: >-
+      settle() may only run once per day. Guard: settlement.done === false.
+      Prevents double-settlement and point duplication.
+    scope: [settlement.done]
+
+  - name: carbon_fund_monotonic
+    description: >-
+      carbonFundPool increases only on forfeit and never decreases.
+      Ensures community impact metric accuracy.
+    scope: [carbonFundPool, pledge.outcome]
+
+  - name: activity_log_bounded
+    description: >-
+      activityLog is capped at 100 entries. Oldest entries are evicted on overflow.
+      Prevents unbounded localStorage growth.
+    scope: [activityLog]
+
+  - name: prediction_range_ordered
+    description: >-
+      prediction.range.max must be strictly greater than prediction.range.min.
+      Ensures valid prediction windows.
+    scope: [prediction.range.min, prediction.range.max]
+
+  - name: balance_non_negative
+    description: >-
+      balance and carbonFundPool are always non-negative.
+      Prevents point underflow.
+    scope: [balance, carbonFundPool]
+
+futureBackendMapping:
+  table: user_game_sessions
+  primaryKey: [user_id, date]
+  description: >-
+    Future relational backend will map OffPeakStore to a user_game_sessions table
+    with one row per user per day. Nested objects (pledge, prediction, settlement)
+    may be normalized into child tables or stored as JSON columns depending on
+    database design.
+  expectedColumns:
+    - user_id
+    - date
+    - balance
+    - carbon_fund_pool
+    - pledge_staked
+    - pledge_committed
+    - pledge_entered_at
+    - pledge_outcome
+    - prediction_min
+    - prediction_max
+    - prediction_submitted
+    - prediction_outcome
+    - settlement_done
+    - settlement_combo
+    - settlement_total_reward
+    - settlement_badge
+    - off_peak_window_start
+    - off_peak_window_end
+    - activity_log
+    - created_at
+    - updated_at
