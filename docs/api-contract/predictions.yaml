@@ -1,0 +1,155 @@
+openapi: 3.1.0
+info:
+  title: Metro Off-Peak Prediction - Predictions API
+  version: 1.0.0
+  description: >-
+    Game B: User submits ridership prediction for a specific metro line and time window.
+    This contract documents the mock API implemented in `src/api/mockApi.ts`.
+    It serves as the real-API spec for post-hackathon backend implementation.
+
+servers:
+  - url: /api/v1
+    description: Off-peak prediction API (future real implementation)
+
+paths:
+  /predictions:
+    post:
+      operationId: createPrediction
+      summary: Submit a ridership prediction (Game B)
+      description: >-
+        User predicts the ridership count for a specific metro line and time window.
+        The prediction range is evaluated against actual ridership for scoring.
+      tags:
+        - Predictions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PredictionRequest'
+      responses:
+        '200':
+          description: Prediction created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PredictionResponse'
+        '400':
+          description: >-
+            Invalid request (min > max, unrecognized line, or invalid time window)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    PredictionRequest:
+      type: object
+      description: Request to create a new ridership prediction
+      properties:
+        userId:
+          type: string
+          description: User identifier
+          minLength: 1
+          example: "user_12345"
+        line:
+          type: string
+          description: Metro line code
+          enum: ["wenhu", "bannan"]
+          example: "wenhu"
+        timeWindow:
+          type: object
+          description: Time window for the prediction
+          properties:
+            start:
+              type: string
+              pattern: '^([01]\d|2[0-3]):[0-5]\d$'
+              description: Start time (HH:MM, 24-hour format)
+              example: "08:00"
+            end:
+              type: string
+              pattern: '^([01]\d|2[0-3]):[0-5]\d$'
+              description: End time (HH:MM, 24-hour format)
+              example: "09:00"
+          required:
+            - start
+            - end
+        predictedRange:
+          type: object
+          description: Range prediction for ridership count
+          properties:
+            min:
+              type: integer
+              description: Minimum predicted ridership
+              minimum: 0
+              example: 450
+            max:
+              type: integer
+              description: Maximum predicted ridership
+              minimum: 0
+              example: 650
+          required:
+            - min
+            - max
+      required:
+        - userId
+        - line
+        - timeWindow
+        - predictedRange
+
+    PredictionResponse:
+      type: object
+      description: Successful prediction creation response
+      properties:
+        predictionId:
+          type: string
+          description: Unique identifier for this prediction (UUID)
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440001"
+        referenceRidership:
+          type: object
+          description: Reference data for comparison with user's prediction
+          properties:
+            yesterday:
+              type: integer
+              description: Ridership from same time window on previous day
+              minimum: 0
+              example: 520
+            forecast:
+              type: integer
+              description: Official forecast for this time window
+              minimum: 0
+              example: 580
+          required:
+            - yesterday
+            - forecast
+      required:
+        - predictionId
+        - referenceRidership
+
+    ErrorResponse:
+      type: object
+      description: Standard error response
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code
+          example: "INVALID_RANGE"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Predicted minimum cannot exceed maximum"
+        details:
+          type: object
+          description: Additional error context
+          additionalProperties: true
+      required:
+        - code
+        - message

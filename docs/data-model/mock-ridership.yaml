@@ -1,0 +1,330 @@
+---
+# ODCS v3.1 Data Model: MockRidership and ActivityLogEntry
+# Source: src/api/mockData.ts (static data, not persisted to localStorage)
+# Description: Mock ridership data and activity log entries for metro off-peak prediction.
+#              Future backend mapping: ridership_history table populated from MRT open data API.
+
+title: MockRidership & ActivityLogEntry
+description: >-
+  Static mock ridership data structure and activity log entry schema.
+  MockRidership is static test data in src/api/mockData.ts.
+  ActivityLogEntry is a reusable component for audit trail entries.
+version: '1.0.0'
+persistence:
+  mockRidership:
+    type: static
+    location: src/api/mockData.ts
+    description: Not persisted; regenerated per app session for testing
+  activityLogEntry:
+    type: component
+    description: Reusable schema embedded in OffPeakStore.activityLog
+
+entities:
+  MockRidership:
+    description: >-
+      Static mock ridership data for a specific MRT line and date.
+      Simulates real-world hourly ridership patterns.
+      Future backend: populated from MRT open data API.
+    fields:
+      date:
+        type: string
+        format: YYYY-MM-DD
+        description: Calendar date of ridership data
+        example: "2026-08-11"
+
+      line:
+        type: enum
+        enumValues:
+          - wenhu
+          - bannan
+        description: MRT line identifier (extensible for future lines)
+        example: wenhu
+
+      hourly:
+        type: array
+        length: 24
+        items:
+          type: integer
+          constraints:
+            minimum: 0
+        description: >-
+          Hourly ridership counts indexed by hour (0-23).
+          Index 0 = 00:00-01:00, Index 8 = 08:00-09:00, etc.
+        example:
+          - 150
+          - 120
+          - 100
+          - 80
+          - 90
+          - 200
+          - 450
+          - 650
+          - 800
+          - 750
+          - 700
+          - 650
+          - 600
+          - 580
+          - 550
+          - 520
+          - 480
+          - 450
+          - 400
+          - 350
+          - 300
+          - 250
+          - 200
+          - 170
+
+      peakHour:
+        type: integer
+        constraints:
+          minimum: 0
+          maximum: 23
+        description: >-
+          Hour of daily peak ridership (typically 8 for morning commute).
+          Index into hourly[] array.
+        example: 8
+
+      offPeakThreshold:
+        type: integer
+        constraints:
+          minimum: 0
+        description: >-
+          Ridership threshold for off-peak classification.
+          Typically 70% of peak hour count.
+          Used to determine off-peak window boundaries.
+        formula: "Math.floor(hourly[peakHour] * 0.7)"
+        example: 560
+
+  ActivityLogEntry:
+    description: >-
+      Immutable audit log entry for any action in the game session.
+      Embedded in OffPeakStore.activityLog array (max 100 entries).
+      Provides full traceability of user actions and outcomes.
+    fields:
+      ts:
+        type: string
+        format: iso8601
+        description: Action timestamp in ISO8601 format (UTC)
+        example: "2026-08-11T08:30:45.123Z"
+
+      action:
+        type: string
+        description: >-
+          Action identifier. Common values:
+          - commitPledge: User staked points in Game A
+          - submitPrediction: User submitted ridership prediction in Game B
+          - settle: Daily settlement calculation executed
+          - forfeit: User forfeited pledge (e.g., did not travel in off-peak window)
+          - earnBadge: User earned a badge
+          - earnCombo: User earned combo multiplier
+        example: "commitPledge"
+        commonValues:
+          - commitPledge
+          - submitPrediction
+          - settle
+          - forfeit
+          - earnBadge
+          - earnCombo
+
+      payload:
+        type: object
+        description: >-
+          Input parameters passed to the action (snapshot of request state).
+          Structure varies by action type. See action-specific schemas below.
+        additionalProperties: true
+        example:
+          staked: 100
+          timestamp: "2026-08-11T08:30:00Z"
+
+      result:
+        type: object
+        description: >-
+          Output of the action (snapshot of state change).
+          Structure varies by action type.
+        additionalProperties: true
+        example:
+          success: true
+          newBalance: 900
+          totalReward: 0
+
+actionSchemas:
+  commitPledge:
+    description: User commits points to Game A
+    payload:
+      staked:
+        type: integer
+        description: Points staked
+      timestamp:
+        type: string
+        format: iso8601
+        description: Pledge entry timestamp
+    result:
+      success:
+        type: boolean
+      newBalance:
+        type: integer
+      pledgeId:
+        type: string
+        description: Unique ID for this pledge
+
+  submitPrediction:
+    description: User submits ridership prediction for Game B
+    payload:
+      rangeMin:
+        type: integer
+        description: Lower bound of prediction
+      rangeMax:
+        type: integer
+        description: Upper bound of prediction
+    result:
+      success:
+        type: boolean
+      predictionId:
+        type: string
+
+  settle:
+    description: Daily settlement calculation and reward distribution
+    payload:
+      settlementDate:
+        type: string
+        format: YYYY-MM-DD
+      actualRidership:
+        type: integer
+        description: Actual off-peak ridership for the day
+    result:
+      success:
+        type: boolean
+      pledgeOutcome:
+        type: enum
+        enumValues: [success, forfeit]
+      predictionOutcome:
+        type: enum
+        enumValues: [correct, wrong]
+      totalReward:
+        type: integer
+      comboApplied:
+        type: boolean
+      badgeEarned:
+        type: string | null
+
+  forfeit:
+    description: User forfeited pledge due to not traveling during off-peak window
+    payload:
+      pledgeId:
+        type: string
+      foreitedAmount:
+        type: integer
+    result:
+      success:
+        type: boolean
+      stakedPoints:
+        type: integer
+        description: Points added to carbonFundPool
+
+  earnBadge:
+    description: Badge awarded based on achievement criteria
+    payload:
+      badgeSlug:
+        type: string
+        example: "carbon-hero"
+      criteria:
+        type: string
+        description: Criteria met to earn badge
+    result:
+      success:
+        type: boolean
+      badgeId:
+        type: string
+
+  earnCombo:
+    description: Combo multiplier applied (both Game A and B succeeded)
+    payload:
+      pledgeOutcome: string
+      predictionOutcome: string
+    result:
+      success:
+        type: boolean
+      multiplier:
+        type: number
+        example: 1.5
+      additionalReward:
+        type: integer
+
+invariants:
+  - name: hourly_array_length
+    description: >-
+      hourly array must have exactly 24 elements (one per hour of day).
+    scope: [hourly]
+
+  - name: peak_hour_valid_index
+    description: >-
+      peakHour must be a valid index (0-23) into the hourly array.
+    scope: [peakHour]
+
+  - name: off_peak_threshold_derived
+    description: >-
+      offPeakThreshold is typically 70% of peak hour ridership.
+      Must be >= 0 and <= peak hour count.
+    scope: [offPeakThreshold, peakHour, hourly]
+
+  - name: activity_log_immutable
+    description: >-
+      ActivityLogEntry fields are immutable after creation.
+      No updates allowed; only new entries can be appended.
+    scope: [ts, action, payload, result]
+
+  - name: action_result_idempotent
+    description: >-
+      Same action payload should yield the same result.
+      Replay determinism: critical for audit trail integrity.
+    scope: [action, payload, result]
+
+futureBackendMapping:
+  mockRidership:
+    table: ridership_history
+    primaryKey: [date, line]
+    description: >-
+      Real ridership data will be populated from MRT open data API.
+      MockRidership is the schema placeholder during development.
+    expectedColumns:
+      - date
+      - line
+      - hourly_ridership (JSON array or normalized table)
+      - peak_hour
+      - off_peak_threshold
+      - created_at
+      - updated_at
+
+  activityLogEntry:
+    table: activity_log
+    primaryKey: [id]
+    foreignKey:
+      user_id:
+        references: users.id
+      game_session_id:
+        references: user_game_sessions.id
+    description: >-
+      Immutable audit trail of all user actions within a game session.
+      One row per action. Supports compliance, debugging, and analytics.
+    expectedColumns:
+      - id
+      - user_id
+      - game_session_id
+      - timestamp
+      - action_name
+      - payload (JSON)
+      - result (JSON)
+      - created_at
+
+dataGovernance:
+  retention:
+    mockRidership: indefinite (static seed data)
+    activityLogEntry: 2 years (regulatory/compliance)
+  piiHandling: >-
+    ActivityLogEntry may contain user actions but no explicit PII.
+    Timestamps and action payloads are inherently linked to user_id (backend only).
+  backupStrategy: >-
+    Activity logs are immutable and should be backed up continuously.
+    Ridership history is archival and can be backed up daily.

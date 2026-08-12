@@ -1,0 +1,194 @@
+openapi: 3.1.0
+info:
+  title: Metro Off-Peak Prediction - Settlements API
+  version: 1.0.0
+  description: >-
+    Calculate and apply final reward based on Game A and Game B outcomes.
+    This contract documents the mock API implemented in `src/api/mockApi.ts`.
+    It serves as the real-API spec for post-hackathon backend implementation.
+
+servers:
+  - url: /api/v1
+    description: Off-peak prediction API (future real implementation)
+
+paths:
+  /settlements:
+    post:
+      operationId: settleGame
+      summary: Calculate and apply final reward
+      description: >-
+        Settles both games and calculates total reward. Evaluates Game A
+        (on-time off-peak entry) and optionally Game B (ridership prediction accuracy).
+        Applies bonus multipliers for combo success and awards environmental badges.
+      tags:
+        - Settlements
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettlementRequest'
+      responses:
+        '200':
+          description: Settlement calculated and applied successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettlementResponse'
+        '400':
+          description: Invalid request (pledge not verified yet)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Pledge already settled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    SettlementRequest:
+      type: object
+      description: Request to settle a game and calculate reward
+      properties:
+        pledgeId:
+          type: string
+          description: Pledge identifier (from commitment response)
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        predictionId:
+          type: string
+          nullable: true
+          description: >-
+            Optional prediction identifier (from predictions response).
+            If null, Game B is skipped.
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440001"
+      required:
+        - pledgeId
+
+    SettlementResponse:
+      type: object
+      description: Successful settlement response with final reward calculation
+      properties:
+        settlementId:
+          type: string
+          description: Unique identifier for this settlement (UUID)
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440002"
+        gameA:
+          type: object
+          description: Game A outcome and reward
+          properties:
+            outcome:
+              type: string
+              enum: ["success", "forfeit", "skipped"]
+              description: >-
+                Game A outcome. "success" = on-time entry, "forfeit" = late entry
+                (lose staked points), "skipped" = no verification submitted.
+              example: "success"
+            reward:
+              type: integer
+              description: Points awarded for Game A (0 if forfeit)
+              minimum: 0
+              example: 50
+          required:
+            - outcome
+            - reward
+        gameB:
+          type: object
+          description: Game B outcome and reward
+          properties:
+            outcome:
+              type: string
+              enum: ["correct", "wrong", "skipped"]
+              description: >-
+                Game B outcome. "correct" = prediction within actual ridership range,
+                "wrong" = prediction outside range, "skipped" = no prediction submitted.
+              example: "correct"
+            reward:
+              type: integer
+              description: Points awarded for Game B (0 if wrong or skipped)
+              minimum: 0
+              example: 75
+            actualRidership:
+              type: integer
+              nullable: true
+              description: >-
+                Actual ridership count (only present if Game B was played).
+                User compares this to their predicted range.
+              minimum: 0
+              example: 520
+          required:
+            - outcome
+            - reward
+        combo:
+          type: boolean
+          description: >-
+            True if both games were played and both succeeded.
+            Unlocks combo bonus multiplier.
+          example: true
+        totalReward:
+          type: integer
+          description: >-
+            Total points awarded including combo bonus.
+            Formula: gameA.reward + gameB.reward + (combo ? 25 : 0)
+          minimum: 0
+          example: 150
+        newBalance:
+          type: integer
+          description: User's point balance after reward application
+          minimum: 0
+          example: 250
+        carbonFundDelta:
+          type: integer
+          description: >-
+            Change to environmental carbon offset fund (basis points).
+            Each off-peak trip diverts ~0.5 kg CO2 vs peak-hour alternative.
+          example: 50
+        badge:
+          type: string
+          nullable: true
+          description: >-
+            Unlocked environmental badge name (if applicable).
+            Examples: "Green Commuter", "Off-Peak Master", "Carbon Champion".
+            Null if no badge earned.
+          example: "Off-Peak Master"
+      required:
+        - settlementId
+        - gameA
+        - gameB
+        - combo
+        - totalReward
+        - newBalance
+        - carbonFundDelta
+
+    ErrorResponse:
+      type: object
+      description: Standard error response
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code
+          enum: ["NOT_VERIFIED", "ALREADY_SETTLED", "INVALID_PLEDGE"]
+          example: "NOT_VERIFIED"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Pledge must be verified before settlement"
+        details:
+          type: object
+          description: Additional error context
+          additionalProperties: true
+      required:
+        - code
+        - message
