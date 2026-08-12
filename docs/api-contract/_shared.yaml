@@ -1,0 +1,135 @@
+# Shared OpenAPI 3.1 Components
+# This contract documents the mock API implemented in `src/api/mockApi.ts`.
+# It serves as the real-API spec for post-hackathon backend implementation.
+
+components:
+  schemas:
+    UserId:
+      type: string
+      description: User identifier
+      minLength: 1
+      example: "user_12345"
+
+    Points:
+      type: integer
+      description: Gamification points
+      minimum: 0
+      example: 150
+
+    HHMMTime:
+      type: string
+      description: Time in HH:MM format (24-hour)
+      pattern: '^([01]\d|2[0-3]):[0-5]\d$'
+      example: "08:30"
+
+    ISOTimestamp:
+      type: string
+      description: ISO 8601 timestamp with timezone
+      format: date-time
+      example: "2026-08-11T14:30:00Z"
+
+    Date:
+      type: string
+      description: Date in YYYY-MM-DD format
+      format: date
+      example: "2026-08-11"
+
+    UUID:
+      type: string
+      description: Universally unique identifier (UUID v4)
+      format: uuid
+      example: "550e8400-e29b-41d4-a716-446655440000"
+
+    OffPeakWindow:
+      type: object
+      description: Off-peak time window definition
+      properties:
+        start:
+          $ref: '#/components/schemas/HHMMTime'
+        end:
+          $ref: '#/components/schemas/HHMMTime'
+        label:
+          type: string
+          description: Human-readable label for the window
+          example: "Early Bird (06:00-08:30)"
+      required:
+        - start
+        - end
+        - label
+
+    PredictedRange:
+      type: object
+      description: Range prediction with min and max values
+      properties:
+        min:
+          type: integer
+          description: Minimum predicted ridership
+          minimum: 0
+          example: 450
+        max:
+          type: integer
+          description: Maximum predicted ridership
+          minimum: 0
+          example: 650
+      required:
+        - min
+        - max
+
+    ReferenceRidership:
+      type: object
+      description: Reference ridership data for comparison
+      properties:
+        yesterday:
+          type: integer
+          description: Ridership from same time window yesterday
+          minimum: 0
+          example: 520
+        forecast:
+          type: integer
+          description: Official forecast for this time window
+          minimum: 0
+          example: 580
+      required:
+        - yesterday
+        - forecast
+
+    SettlementOutcome:
+      type: object
+      description: Settlement outcome for a game
+      properties:
+        outcome:
+          type: string
+          enum: ["success", "forfeit", "wrong", "correct", "skipped"]
+          description: Outcome of the game
+        reward:
+          type: integer
+          description: Points awarded
+          minimum: 0
+          example: 100
+        actualRidership:
+          type: integer
+          description: Actual ridership (only for Game B)
+          minimum: 0
+      required:
+        - outcome
+        - reward
+
+    ErrorResponse:
+      type: object
+      description: Standard error response
+      properties:
+        code:
+          type: string
+          description: Error code
+          example: "INVALID_INPUT"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Stake points must be at least 10"
+        details:
+          type: object
+          description: Additional error details
+          additionalProperties: true
+      required:
+        - code
+        - message

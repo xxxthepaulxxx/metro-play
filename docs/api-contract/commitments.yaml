@@ -1,0 +1,139 @@
+openapi: 3.1.0
+info:
+  title: Metro Off-Peak Prediction - Commitments API
+  version: 1.0.0
+  description: >-
+    Game A: User commits to off-peak entry.
+    This contract documents the mock API implemented in `src/api/mockApi.ts`.
+    It serves as the real-API spec for post-hackathon backend implementation.
+
+servers:
+  - url: /api/v1
+    description: Off-peak prediction API (future real implementation)
+
+paths:
+  /commitments:
+    post:
+      operationId: createCommitment
+      summary: Create an off-peak entry commitment (Game A)
+      description: >-
+        User stakes points to commit to entering the metro system during
+        a designated off-peak time window. Returns pledge ID, off-peak window,
+        remaining balance, and deadline for entry.
+      tags:
+        - Commitments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommitmentRequest'
+      responses:
+        '200':
+          description: Commitment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitmentResponse'
+        '400':
+          description: Invalid request (stakePoints < 10 or targetDate already committed)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    CommitmentRequest:
+      type: object
+      description: Request to create a new off-peak commitment
+      properties:
+        userId:
+          type: string
+          description: User identifier
+          minLength: 1
+          example: "user_12345"
+        stakePoints:
+          type: integer
+          description: Points staked on this commitment (minimum 10)
+          minimum: 10
+          example: 50
+        targetDate:
+          type: string
+          description: Target date for off-peak entry (YYYY-MM-DD)
+          format: date
+          example: "2026-08-12"
+      required:
+        - userId
+        - stakePoints
+        - targetDate
+
+    CommitmentResponse:
+      type: object
+      description: Successful commitment creation response
+      properties:
+        pledgeId:
+          type: string
+          description: Unique identifier for this pledge (UUID)
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        offPeakWindow:
+          type: object
+          description: Assigned off-peak time window
+          properties:
+            start:
+              type: string
+              pattern: '^([01]\d|2[0-3]):[0-5]\d$'
+              example: "06:00"
+            end:
+              type: string
+              pattern: '^([01]\d|2[0-3]):[0-5]\d$'
+              example: "08:30"
+            label:
+              type: string
+              example: "Early Bird"
+          required:
+            - start
+            - end
+            - label
+        balance:
+          type: integer
+          description: Remaining points after stake deduction
+          minimum: 0
+          example: 100
+        deadline:
+          type: string
+          description: ISO 8601 deadline for entry (e.g., commit deadline at 06:00 day-of)
+          format: date-time
+          example: "2026-08-12T06:00:00Z"
+      required:
+        - pledgeId
+        - offPeakWindow
+        - balance
+        - deadline
+
+    ErrorResponse:
+      type: object
+      description: Standard error response
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code
+          example: "INVALID_STAKE"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Stake points must be at least 10"
+        details:
+          type: object
+          description: Additional error context
+          additionalProperties: true
+      required:
+        - code
+        - message
