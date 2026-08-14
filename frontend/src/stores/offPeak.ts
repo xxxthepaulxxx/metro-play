@@ -27,6 +27,8 @@ interface OffPeakState {
     done: boolean;
     combo: boolean;
     totalReward: number;
+    pledgeReward: number;
+    guessReward: number;
     badge: string | null;
   };
   offPeakWindow: {
@@ -60,6 +62,8 @@ export const useOffPeakStore = defineStore("off-peak-store", {
       done: false,
       combo: false,
       totalReward: 0,
+      pledgeReward: 0,
+      guessReward: 0,
       badge: null,
     },
     offPeakWindow: {
@@ -149,8 +153,13 @@ export const useOffPeakStore = defineStore("off-peak-store", {
       this.settlement.done = true;
       this.settlement.combo = response.combo;
       this.settlement.totalReward = response.totalReward;
+      this.settlement.pledgeReward = response.gameA.reward;
+      this.settlement.guessReward = response.gameB.reward;
       this.settlement.badge = response.badge;
       this.balance += response.totalReward;
+      if (this.prediction.submitted && response.gameB.outcome !== "skipped") {
+        this.prediction.outcome = response.gameB.outcome;
+      }
 
       if (this.pledge.outcome === "forfeit") {
         this.carbonFundPool += this.pledge.staked;
@@ -185,6 +194,8 @@ export const useOffPeakStore = defineStore("off-peak-store", {
         done: false,
         combo: false,
         totalReward: 0,
+        pledgeReward: 0,
+        guessReward: 0,
         badge: null,
       };
       this._pledgeId = null;

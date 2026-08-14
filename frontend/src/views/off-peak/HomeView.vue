@@ -22,9 +22,13 @@
       <GameCard>
         <template #title>🎯 運量猜猜樂</template>
         <template #description>預測離峰時段旅客運量，猜對贏得額外獎勵。</template>
-        <router-link to="/off-peak/game-b" class="cta-button">前往</router-link>
+        <span v-if="store.prediction.submitted" class="committed-badge">已預測</span>
+        <router-link v-else to="/off-peak/game-b" class="cta-button">前往</router-link>
       </GameCard>
     </section>
+
+    <MockTapInButton />
+    <SettlementOverlay />
   </div>
 </template>
 
@@ -32,9 +36,13 @@
 // biome-ignore lint/correctness/noUnusedImports: used in template
 import GameCard from "../../components/GameCard.vue";
 // biome-ignore lint/correctness/noUnusedImports: used in template
+import MockTapInButton from "../../components/MockTapInButton.vue";
+// biome-ignore lint/correctness/noUnusedImports: used in template
 import OffPeakTimeBanner from "../../components/OffPeakTimeBanner.vue";
 // biome-ignore lint/correctness/noUnusedImports: used in template
 import PointBadge from "../../components/PointBadge.vue";
+// biome-ignore lint/correctness/noUnusedImports: used in template
+import SettlementOverlay from "../../components/SettlementOverlay.vue";
 import { useOffPeakStore } from "../../stores/offPeak";
 
 // biome-ignore lint/correctness/noUnusedVariables: exposed to template
