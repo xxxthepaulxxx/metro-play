@@ -5,18 +5,22 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      component: () => import("../views/Module1Home.vue"),
+      redirect: "/off-peak",
     },
     {
-      path: "/game-a",
+      path: "/off-peak",
+      component: () => import("../views/off-peak/HomeView.vue"),
+    },
+    {
+      path: "/off-peak/game-a",
       component: () => import("../views/GameA.vue"),
     },
     {
-      path: "/game-b",
+      path: "/off-peak/game-b",
       component: () => import("../views/GameB.vue"),
     },
     {
-      path: "/settlement",
+      path: "/off-peak/settlement",
       component: () => import("../views/Settlement.vue"),
     },
     {
@@ -33,7 +37,7 @@ const router = createRouter({
     },
     {
       path: "/:pathMatch(.*)*",
-      redirect: "/",
+      redirect: "/off-peak",
     },
   ],
 });

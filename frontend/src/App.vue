@@ -35,8 +35,8 @@ const route = useRoute();
 const tabs = [
   {
     label: "⚔️ 離峰大作戰",
-    to: "/",
-    activePaths: ["/", "/game-a", "/game-b", "/settlement"],
+    to: "/off-peak",
+    activePaths: ["/off-peak", "/off-peak/game-a", "/off-peak/game-b", "/off-peak/settlement"],
   },
   { label: "🎁 盲盒旅行", to: "/module2", activePaths: ["/module2"] },
   { label: "👑 夢幻特權", to: "/module3", activePaths: ["/module3"] },
@@ -48,9 +48,7 @@ type Tab = (typeof tabs)[number];
 // biome-ignore lint/correctness/noUnusedVariables: used in template as isTabActive(tab)
 const isTabActive = computed(() => (tab: Tab) => {
   const path = route.path;
-  return tab.activePaths.some((p) =>
-    p === "/" ? path === "/" : path === p || path.startsWith(`${p}/`)
-  );
+  return tab.activePaths.some((p) => path === p || path.startsWith(`${p}/`));
 });
 
 onMounted(() => {
