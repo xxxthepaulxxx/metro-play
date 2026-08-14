@@ -13,7 +13,7 @@ const router = createRouter({
     },
     {
       path: "/off-peak/game-a",
-      component: () => import("../views/GameA.vue"),
+      component: () => import("../views/off-peak/GameAPledgeView.vue"),
     },
     {
       path: "/off-peak/game-b",
