@@ -8,10 +8,10 @@ function makeRouter() {
   return createRouter({
     history: createWebHashHistory(),
     routes: [
-      { path: "/", component: { template: "<div />" } },
-      { path: "/game-a", component: { template: "<div />" } },
-      { path: "/game-b", component: { template: "<div />" } },
-      { path: "/settlement", component: { template: "<div />" } },
+      { path: "/off-peak", component: { template: "<div />" } },
+      { path: "/off-peak/game-a", component: { template: "<div />" } },
+      { path: "/off-peak/game-b", component: { template: "<div />" } },
+      { path: "/off-peak/settlement", component: { template: "<div />" } },
       { path: "/module2", component: { template: "<div />" } },
       { path: "/module3", component: { template: "<div />" } },
       { path: "/module4", component: { template: "<div />" } },
@@ -38,9 +38,9 @@ describe("App", () => {
     expect(wrapper.findAll(".tab")).toHaveLength(4);
   });
 
-  it("tab 1 is active on root route", async () => {
+  it("tab 1 is active on /off-peak route", async () => {
     const router = makeRouter();
-    await router.push("/");
+    await router.push("/off-peak");
     const wrapper = mount(App, {
       global: { plugins: [router, createPinia()] },
     });
