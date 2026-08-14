@@ -17,7 +17,7 @@ const router = createRouter({
     },
     {
       path: "/off-peak/game-b",
-      component: () => import("../views/GameB.vue"),
+      component: () => import("../views/off-peak/GameBGuessView.vue"),
     },
     {
       path: "/off-peak/settlement",
