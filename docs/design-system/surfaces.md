@@ -20,8 +20,8 @@ Complete inventory of all screens, surfaces, and navigation patterns for the met
 
 **Tabs:**
 1. **⚔️ 離峰大作戰** — Module 1 Home (always accessible, no auth required initially)
-2. **🎁 盲盒旅行** — Module 2 Mystery Box Travel (out of scope for PRD v1)
-3. **👑 夢幻特權** — Module 3 Dream Privileges (out of scope for PRD v1)
+2. **🎁 盲盒旅行** — Module 2 Mystery Box Travel
+3. **👑 夢幻特權** — Module 3 Dream Privileges
 4. **🗺️ 城市RPG** — Module 4 City RPG (out of scope for PRD v1)
 
 ---
@@ -187,11 +187,20 @@ Navigation model: the global bottom nav tab 2 ("🎁 盲盒旅行") points to `/
 
 ---
 
+## Module 3 — 夢幻特權 (Dream Privilege / Loyalty Tier)
+
+| path | kind | entry-source | global-nav | auth | component |
+|------|------|--------------|------------|------|-----------|
+| `/privileges` | top-level | global nav tab 3 "👑 夢幻特權" | yes | public | `PrivilegesHomeView` |
+
+Navigation model: the global nav tab 3 ("👑 夢幻特權") points to `/privileges`. The Privileges home displays the rider's current loyalty tier (with EXP progress bar), active perks for the tier, and locked perks for the next tier. On tier-up, an UnlockAnimation overlay is displayed (one-shot). Back navigation or tab switching returns to other modules.
+
+---
+
 ## Out-of-Scope Surfaces (For Future Sprints)
 
 | Surface | Module | Tab | Status |
 |---------|--------|-----|--------|
-| 夢幻特權 (Dream Privileges) | Module 3 | 👑 | Design TBD |
 | 城市RPG (City RPG) | Module 4 | 🗺️ | Design TBD |
 
 ---

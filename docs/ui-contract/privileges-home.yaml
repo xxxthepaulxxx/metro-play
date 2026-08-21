@@ -1,0 +1,48 @@
+surface: privileges-home
+route: /privileges
+view: PrivilegesHomeView
+description: |
+  Displays the rider's current loyalty tier, EXP progress, active perks,
+  and locked next-tier perks. Shows unlock animation on tier-up.
+
+actors:
+  - rider
+
+states:
+  - id: no-points
+    condition: cumulative_points == 0
+    displays:
+      - TierShieldCard (Bronze tier, 0 EXP)
+      - CurrentPerksCard (Bronze perks)
+      - NextTierCard (Silver locked)
+
+  - id: mid-tier
+    condition: Bronze < cumulative_points < Platinum threshold
+    displays:
+      - TierShieldCard (current tier, progress bar)
+      - CurrentPerksCard (current tier perks)
+      - NextTierCard (next tier locked)
+
+  - id: max-tier
+    condition: cumulative_points >= Platinum threshold (5000)
+    displays:
+      - TierShieldCard (Platinum, full EXP bar)
+      - CurrentPerksCard (Platinum perks)
+      - "(最高等級)" label instead of NextTierCard
+
+  - id: tier-up
+    condition: points just crossed a tier threshold
+    displays:
+      - UnlockAnimation (one-shot)
+      - then mid-tier or max-tier state
+
+interactions:
+  - trigger: manual_unlock_btn click
+    action: show UnlockAnimation, advance tier in store
+    guard: points >= next_tier_threshold
+
+acceptance_criteria:
+  - EXP bar width reflects (cumulative_points % tier_range) / tier_range
+  - Platinum tier hides NextTierCard and shows "最高等級" label
+  - UnlockAnimation respects prefers-reduced-motion (fade only)
+  - Tab 3 global nav entry links to /privileges

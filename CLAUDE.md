@@ -20,6 +20,7 @@
 **Typography:** System fonts only. Bold/heavy weights for titles. Never custom typefaces.
 **Winner sample:** docs/design-system/samples/index.html (variant-c — Metro Adventurer direction)
 **Module 2 (盲盒旅行):** Teal (#00BCD4) as accent for mystery/discovery mechanic. Blind box = CSS 3D glowing mystery cube with idle pulsing glow (affordance only — not looping content). Reveal = 180° Y-axis card flip (600ms ease-out). Re-roll = horizontal shake (300ms) then flip replay. All Module 2 cards use --color-box-accent-border and --color-box-accent-dim tint.
+**Module 3 (夢幻特權):** Rose (#E91E63) as accent for achievement/prestige mechanic. TierShieldCard hero uses dark glass (ComboCard style) with shield icon and rose EXP bar. CurrentPerksCard has solid rose border; NextTierCard uses dashed dim border (locked state). UnlockAnimation is one-shot scale-bounce (400ms) + rose glow (600ms). Tokens: --color-tier-accent, --color-tier-accent-dim, --color-tier-accent-border, --color-tier-accent-glow.
 
 ## Architecture Context
 
