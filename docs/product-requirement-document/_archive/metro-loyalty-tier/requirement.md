@@ -1,3 +1,10 @@
+---
+status: sliced
+sliced_at: 2026-08-21
+---
+
+> **Archived (sliced 2026-08-21).** Build input only — not a live reference. Durable facts live in ADR / data-model / api-contract / runbooks.
+
 # 夢幻特權 (Dream Privilege) — Metro Loyalty Tier System
 
 **Feature name:** `metro-loyalty-tier`
