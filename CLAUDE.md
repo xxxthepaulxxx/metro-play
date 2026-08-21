@@ -5,6 +5,7 @@
 **Project:** 捷點生活 Metro Go Pass — hackathon prototype
 **Active module:** Module 1 — 離峰減碳大作戰 (Off-Peak Prediction Game)
 **Module 2:** 盲盒旅行 (Blind Box Travel) — spend points to buy mystery destination boxes; PRD at docs/product-requirement-document/metro-blind-box-travel/requirement.md
+**Module 3:** 夢幻特權 (Dream Privilege) — loyalty tier system; PRD at docs/product-requirement-document/metro-loyalty-tier/requirement.md
 **PRD:** docs/product-requirement-document/metro-off-peak-prediction/requirement.md
 **Stack:** Pure HTML/CSS/JS, no build toolchain, single-page prototype
 **Demo target:** Hackathon judges; full flow walkable in <3 min
