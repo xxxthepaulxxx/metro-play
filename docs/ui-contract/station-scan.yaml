@@ -1,0 +1,17 @@
+surface: /module2/scan-station
+component: StationScanView
+regions:
+  - id: scan-instruction
+    description: Instructions for scanning the station QR code
+  - id: scan-button
+    description: ScanSimulator component for station verification
+actions:
+  - role: button
+    accessible-name: "Scan Station QR"
+    region: scan-button
+    navigates-to: /module2/scan-merchant
+accessibility:
+  focus-order: [scan-instruction, scan-button]
+  min-tap-target: 44px
+  contrast: WCAG AA
+  live-region: scan success announcement

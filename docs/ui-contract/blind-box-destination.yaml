@@ -1,0 +1,18 @@
+surface: /module2/destination
+component: BlindBoxDestinationView
+regions:
+  - id: destination-header
+    description: Station and hidden spot names
+  - id: discount-info
+    description: Discount details and conditions
+  - id: scan-station-cta
+    description: Button to begin station QR scan
+actions:
+  - role: button
+    accessible-name: "Scan Station QR"
+    region: scan-station-cta
+    navigates-to: /module2/scan-station
+accessibility:
+  focus-order: [destination-header, discount-info, scan-station-cta]
+  min-tap-target: 44px
+  contrast: WCAG AA

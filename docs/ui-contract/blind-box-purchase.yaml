@@ -1,0 +1,20 @@
+surface: /module2
+component: BlindBoxPurchaseView
+regions:
+  - id: header
+    description: Module title and point balance display
+  - id: mystery-box
+    description: Interactive MysteryBox component (CSS 3D cube)
+  - id: box-info
+    description: Cost display and purchase explanation
+  - id: purchase-cta
+    description: Primary purchase button
+actions:
+  - role: button
+    accessible-name: "Purchase blind box"
+    region: purchase-cta
+    navigates-to: /module2/reveal
+accessibility:
+  focus-order: [header, box-info, mystery-box, purchase-cta]
+  min-tap-target: 44px
+  contrast: WCAG AA

@@ -245,6 +245,25 @@ All design tokens for the metro-off-peak-prediction design system. These CSS cus
 
 ---
 
+## Module 2 — 盲盒旅行 (Blind Box Travel)
+
+```css
+/* ===== Module 2 — 盲盒旅行 (Blind Box Travel) ===== */
+
+/* Accent palette — teal for mystery/discovery */
+--color-box-accent:        #00BCD4;
+--color-box-accent-dim:    rgba(0, 188, 212, 0.15);
+--color-box-accent-border: rgba(0, 188, 212, 0.4);
+--color-box-glow:          rgba(0, 188, 212, 0.5);
+
+/* Reveal animation timing */
+--duration-box-flip:  600ms;
+--duration-box-shake: 300ms;
+--timing-flip:        cubic-bezier(0.4, 0, 0.2, 1);
+```
+
+---
+
 ## Implementation Notes
 
 All tokens are designed for use in a pure HTML/CSS/JS environment with no build toolchain. Reference them directly in `<style>` blocks or linked stylesheets.

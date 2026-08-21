@@ -284,3 +284,41 @@ All components are CSS-only or minimal HTML/JS. No build toolchain required. Ref
 ```
 
 For reference implementations, see `docs/design-system/samples/index.html`.
+
+---
+
+## Module 2 Components
+
+### MysteryBox
+
+CSS 3D cube with two visible faces (front and top), teal gradient fill, large "?" on front face. Idle: pulsing outer glow using `--color-box-glow` (affordance cue, not decorative looping). On tap: triggers flip reveal to `BoxRevealCard`.
+
+- **Props:** `size` (default `160px`), `disabled`
+- **Tokens:** `--color-box-accent`, `--color-box-glow`, `--color-box-accent-dim`
+- **Accessibility:** `role="button"`, `aria-label="Open blind box"`, focus-visible ring uses `--color-box-accent`
+
+### BoxRevealCard
+
+Destination card revealed after the 180° Y-axis flip. Glassmorphism base with `--color-box-accent-border` border and `--color-box-accent-dim` background tint.
+
+Content regions: station name (bold), hidden spot name (secondary), discount description (badge with `--color-box-accent`), re-roll button (shows point cost, triggers shake + re-flip), "Let's Go!" CTA (navigates to `/module2/destination`).
+
+- **Tokens:** `--color-box-accent-border`, `--color-box-accent-dim`, `--color-box-accent`, `--duration-box-flip`, `--duration-box-shake`, `--timing-flip`
+- **Accessibility:** re-roll `aria-label` includes cost, CTA is a standard labelled button
+
+### ScanSimulator
+
+Full-width button simulating a QR scan. On tap: concentric teal pulse rings animation, then success state (checkmark + scale-up).
+
+- **Props:** `label`, `onScan`
+- **Tokens:** `--color-box-accent`, `--color-box-glow`
+- **Accessibility:** `role="button"`, `aria-label` from `label` prop, success announced via `aria-live="polite"`
+
+### RewardSummary
+
+Settlement card after full journey. Glassmorphism base.
+
+Content: discount-activated badge (`--color-box-accent` background), bonus-points display (`--color-gold`, entrance scale-bounce, no loop), updated point balance.
+
+- **Tokens:** `--color-box-accent`, `--color-gold`
+- **Accessibility:** wrapped in `aria-live="polite"`

@@ -1,0 +1,19 @@
+surface: /module2/scan-merchant
+component: MerchantScanView
+regions:
+  - id: scan-instruction
+    description: Instructions for scanning the merchant QR code
+  - id: scan-button
+    description: ScanSimulator component for merchant verification
+  - id: reward-summary
+    description: RewardSummary card shown after successful scan
+actions:
+  - role: button
+    accessible-name: "Scan Merchant QR"
+    region: scan-button
+    triggers: reward settlement
+accessibility:
+  focus-order: [scan-instruction, scan-button, reward-summary]
+  min-tap-target: 44px
+  contrast: WCAG AA
+  live-region: reward outcome announcement

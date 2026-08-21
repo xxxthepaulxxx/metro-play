@@ -11,6 +11,7 @@ This directory contains architecture decisions for the **metro-off-peak-predicti
 | [ADR-0003](./ADR-0003-mock-async-api.md) | Mock async API over real backend | Accepted |
 | [ADR-0004](./ADR-0004-localstorage-persistence.md) | localStorage for client-side persistence | Accepted |
 | [ADR-0005](./ADR-0005-rule-based-prediction-model.md) | Rule-based prediction model for off-peak window | Accepted |
+| [ADR-0006](./ADR-0006-shared-wallet-store.md) | Extract shared wallet store for multi-module point balance | Accepted |
 
 ## How to Use This Directory
 

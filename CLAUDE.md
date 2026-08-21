@@ -4,6 +4,7 @@
 
 **Project:** 捷點生活 Metro Go Pass — hackathon prototype
 **Active module:** Module 1 — 離峰減碳大作戰 (Off-Peak Prediction Game)
+**Module 2:** 盲盒旅行 (Blind Box Travel) — spend points to buy mystery destination boxes; PRD at docs/product-requirement-document/metro-blind-box-travel/requirement.md
 **PRD:** docs/product-requirement-document/metro-off-peak-prediction/requirement.md
 **Stack:** Pure HTML/CSS/JS, no build toolchain, single-page prototype
 **Demo target:** Hackathon judges; full flow walkable in <3 min
@@ -17,6 +18,7 @@
 **Motion:** Entrance-only animations (fadeSlideUp staggered). No looping glow on content. Particles are decorative.
 **Typography:** System fonts only. Bold/heavy weights for titles. Never custom typefaces.
 **Winner sample:** docs/design-system/samples/index.html (variant-c — Metro Adventurer direction)
+**Module 2 (盲盒旅行):** Teal (#00BCD4) as accent for mystery/discovery mechanic. Blind box = CSS 3D glowing mystery cube with idle pulsing glow (affordance only — not looping content). Reveal = 180° Y-axis card flip (600ms ease-out). Re-roll = horizontal shake (300ms) then flip replay. All Module 2 cards use --color-box-accent-border and --color-box-accent-dim tint.
 
 ## Architecture Context
 

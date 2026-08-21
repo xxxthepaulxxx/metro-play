@@ -173,11 +173,24 @@ Complete inventory of all screens, surfaces, and navigation patterns for the met
 
 ---
 
+## Module 2 — 盲盒旅行 (Blind Box Travel)
+
+| path | kind | entry-source | global-nav | auth | component |
+|------|------|--------------|------------|------|-----------|
+| `/module2` | top-level | global nav tab 2 "🎁 盲盒旅行" | yes | public | `BlindBoxPurchaseView` |
+| `/module2/reveal` | detail-child | navigated from `/module2` after successful purchase | no | public | `BlindBoxRevealView` |
+| `/module2/destination` | detail-child | navigated from `/module2/reveal` after "Let's Go!" | no | public | `BlindBoxDestinationView` |
+| `/module2/scan-station` | contextual | navigated from `/module2/destination` via "Scan Station QR" | no | public | `StationScanView` |
+| `/module2/scan-merchant` | contextual | navigated from `/module2/scan-station` after station verified | no | public | `MerchantScanView` |
+
+Navigation model: the global bottom nav tab 2 ("🎁 盲盒旅行") points to `/module2`. The Module 2 flow is linear: purchase → reveal → destination → scan-station → scan-merchant. Back navigation returns to the previous step. No surface is orphaned.
+
+---
+
 ## Out-of-Scope Surfaces (For Future Sprints)
 
 | Surface | Module | Tab | Status |
 |---------|--------|-----|--------|
-| 盲盒旅行 (Mystery Box) | Module 2 | 🎁 | Design TBD |
 | 夢幻特權 (Dream Privileges) | Module 3 | 👑 | Design TBD |
 | 城市RPG (City RPG) | Module 4 | 🗺️ | Design TBD |
 

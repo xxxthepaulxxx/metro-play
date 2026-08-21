@@ -1,0 +1,23 @@
+surface: /module2/reveal
+component: BlindBoxRevealView
+regions:
+  - id: flip-stage
+    description: Area where MysteryBox flips to reveal BoxRevealCard
+  - id: destination-card
+    description: BoxRevealCard showing revealed destination
+  - id: actions
+    description: Re-roll and "Let's Go!" buttons
+actions:
+  - role: button
+    accessible-name: "Re-roll for {cost} points"
+    region: actions
+    triggers: shake-and-re-deal animation, new destination
+  - role: button
+    accessible-name: "Let's Go!"
+    region: actions
+    navigates-to: /module2/destination
+accessibility:
+  focus-order: [flip-stage, destination-card, actions]
+  min-tap-target: 44px
+  contrast: WCAG AA
+  reduced-motion: skip flip/shake, show card directly
