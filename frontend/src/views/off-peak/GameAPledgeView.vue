@@ -35,11 +35,11 @@
           class="stake-input"
           type="number"
           min="10"
-          :max="store.balance"
+          :max="wallet.balance"
           placeholder="最少 10 點"
         />
         <p class="input-hint">
-          餘額 {{ store.balance.toLocaleString("zh-TW") }} 點，最少 10 點
+          餘額 {{ wallet.balance.toLocaleString("zh-TW") }} 點，最少 10 點
         </p>
 
         <p v-if="error" class="error-msg" role="alert">{{ error }}</p>
@@ -56,10 +56,12 @@
 import { computed, ref } from "vue";
 import { submitPledge } from "../../api/mockApi";
 import { useOffPeakStore } from "../../stores/offPeak";
+import { useWalletStore } from "../../stores/wallet";
 // biome-ignore lint/correctness/noUnusedImports: used in template
 import GameAPledgeConfirm from "./GameAPledgeConfirm.vue";
 
 const store = useOffPeakStore();
+const wallet = useWalletStore();
 const stake = ref<number>(10);
 const loading = ref(false);
 const error = ref<string | null>(null);
@@ -67,7 +69,7 @@ const submitted = ref(false);
 // Capture the staked amount at submit time so the confirm screen is stable
 const stakedAmount = ref(0);
 
-const isValid = computed(() => stake.value >= 10 && stake.value <= store.balance);
+const isValid = computed(() => stake.value >= 10 && stake.value <= wallet.balance);
 
 // biome-ignore lint/correctness/noUnusedVariables: called from template via @submit.prevent
 async function onSubmit(): Promise<void> {

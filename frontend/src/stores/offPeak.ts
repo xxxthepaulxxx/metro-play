@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { settleGame, verifyGateTap } from "../api/mockApi";
 import { getOffPeakWindow } from "../api/mockData";
+import { useWalletStore } from "./wallet";
 
 interface ActivityLogEntry {
   ts: string;
@@ -10,7 +11,6 @@ interface ActivityLogEntry {
 }
 
 interface OffPeakState {
-  balance: number;
   carbonFundPool: number;
   pledge: {
     staked: number;
@@ -45,7 +45,6 @@ const initialWindow = getOffPeakWindow("wenhu");
 
 export const useOffPeakStore = defineStore("off-peak-store", {
   state: (): OffPeakState => ({
-    balance: 1000,
     carbonFundPool: 0,
     pledge: {
       staked: 0,
@@ -93,17 +92,18 @@ export const useOffPeakStore = defineStore("off-peak-store", {
     },
 
     commitPledge(stake: number): void {
-      if (stake < 10 || stake > this.balance) {
+      const wallet = useWalletStore();
+      if (stake < 10 || stake > wallet.balance) {
         this.appendLog("commitPledge", { stake }, { success: false, reason: "invalid_stake" });
         return;
       }
-      this.balance -= stake;
+      wallet.deduct(stake);
       this.pledge.staked = stake;
       this.pledge.committed = true;
       this.appendLog(
         "commitPledge",
         { stake },
-        { success: true, newBalance: this.balance, staked: stake }
+        { success: true, newBalance: wallet.balance, staked: stake }
       );
     },
 
@@ -145,6 +145,7 @@ export const useOffPeakStore = defineStore("off-peak-store", {
       if (this.settlement.done) {
         return;
       }
+      const wallet = useWalletStore();
       const pledgeId = this._pledgeId ?? "mock-pledge-id";
       const predictionId = this.prediction.submitted
         ? (this._predictionId ?? "mock-prediction-id")
@@ -156,7 +157,7 @@ export const useOffPeakStore = defineStore("off-peak-store", {
       this.settlement.pledgeReward = response.gameA.reward;
       this.settlement.guessReward = response.gameB.reward;
       this.settlement.badge = response.badge;
-      this.balance += response.totalReward;
+      wallet.credit(response.totalReward);
       if (this.prediction.submitted && response.gameB.outcome !== "skipped") {
         this.prediction.outcome = response.gameB.outcome;
       }
@@ -173,7 +174,7 @@ export const useOffPeakStore = defineStore("off-peak-store", {
           totalReward: response.totalReward,
           combo: response.combo,
           badge: response.badge,
-          newBalance: this.balance,
+          newBalance: wallet.balance,
         }
       );
     },
