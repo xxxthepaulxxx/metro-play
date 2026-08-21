@@ -1,0 +1,217 @@
+---
+# ODCS v3.1 Data Model: LoyaltyTierStore
+# Source: Pinia persisted store (localStorage key: `loyalty-tier-store`)
+# Description: User loyalty tier tracking and point multiplier calculation.
+#              All fields persist to browser localStorage via Pinia's persistedstate plugin.
+#              Tier progression unlocks reward multipliers applied to off-peak game settlements.
+#              Future backend mapping: user_loyalty_tiers table (one row per user).
+
+title: LoyaltyTierStore
+description: >-
+  Pinia store state shape representing user loyalty tier progression.
+  Persisted to localStorage and serves as the schema draft for future backend implementation.
+version: '1.0.0'
+persistence:
+  type: localStorage
+  key: loyalty-tier-store
+  plugin: pinia-persistedstate
+
+entities:
+  LoyaltyTierStore:
+    description: Root loyalty state
+    fields:
+      cumulativePoints:
+        type: integer
+        constraints:
+          minimum: 0
+        initial: 450
+        description: >-
+          Cumulative lifetime points earned across all game settlements.
+          Monotonically increasing (only addPoints() increments).
+          Determines currentTier via TIER_TABLE lookup.
+          Demo seed of 450 places user mid-Silver tier.
+        example: 450
+
+      unlockPending:
+        type: boolean
+        initial: false
+        description: >-
+          Flag set to true when currentTier changes (tier-up triggered by addPoints()).
+          Consumed by UI to play tier-up animation.
+          Cleared by clearUnlock() after animation completes.
+          Prevents animation replay on re-render.
+        example: false
+
+  TierEntry:
+    description: Immutable tier definition (TIER_TABLE constant, not persisted)
+    fields:
+      name:
+        type: enum
+        enumValues:
+          - Bronze
+          - Silver
+          - Gold
+          - Platinum
+        description: Tier name
+        example: Silver
+
+      threshold:
+        type: integer
+        constraints:
+          minimum: 0
+        description: Minimum cumulative points required to attain this tier
+        example: 200
+
+      multiplier:
+        type: number
+        constraints:
+          minimum: 1.0
+          multipleOf: 0.1
+        description: >-
+          Reward multiplier applied to settlement totalReward.
+          Passed to offPeak.settle() → wallet.credit(adjustedReward)
+          where adjustedReward = round(totalReward * multiplier).
+        example: 1.2
+
+computedProperties:
+  currentTier:
+    type: TierEntry
+    description: >-
+      Highest tier entry where threshold <= cumulativePoints.
+      Derived from TIER_TABLE lookup; not persisted.
+    example: { name: Silver, threshold: 200, multiplier: 1.2 }
+
+  multiplier:
+    type: number
+    description: >-
+      Alias for currentTier.multiplier.
+      Used by offPeak.settle() to calculate adjustedReward.
+    example: 1.2
+
+  nextTierThreshold:
+    type: integer | null
+    description: >-
+      TIER_TABLE[currentIndex + 1].threshold, or null if at Platinum (max tier).
+      Used by UI to display progress bar and remaining points needed.
+    example: 500
+
+  progress:
+    type: integer
+    constraints:
+      minimum: 0
+      maximum: 100
+    description: >-
+      Percentage progress toward nextTier (0-100, clamped).
+      Formula: round((cumulativePoints - currentTier.threshold)
+                     / (nextTierThreshold - currentTier.threshold) * 100)
+      Returns 100 if Platinum (nextTierThreshold is null).
+    example: 50
+
+constants:
+  TIER_TABLE:
+    type: array
+    items:
+      type: TierEntry
+    immutable: true
+    hardcoded: true
+    description: >-
+      Tier progression table. Defines all valid tiers, thresholds, and multipliers.
+      Hardcoded in source (not persisted, never modified at runtime).
+    value:
+      - { name: Bronze,   threshold: 0,    multiplier: 1.0 }
+      - { name: Silver,   threshold: 200,  multiplier: 1.2 }
+      - { name: Gold,     threshold: 500,  multiplier: 1.5 }
+      - { name: Platinum, threshold: 1000, multiplier: 2.0 }
+
+operations:
+  addPoints:
+    description: >-
+      Increment cumulativePoints by amount (called by offPeak.settle()).
+      Detects tier-up and sets unlockPending = true if currentTier changes.
+    parameters:
+      amount:
+        type: integer
+        constraints:
+          minimum: 1
+        description: Points to add (always positive)
+    atomicGuard: true
+    sideEffects:
+      - action: increment
+        field: cumulativePoints
+        constraint: "minimum: 0, monotonically increasing"
+      - action: compare
+        before: currentTier
+        after: currentTier
+        onTransition: "set unlockPending = true"
+
+  clearUnlock:
+    description: >-
+      Reset unlockPending = false after tier-up animation completes.
+      Called by UI layer after entrance animation finishes.
+    sideEffects:
+      - action: set
+        field: unlockPending
+        value: false
+
+invariants:
+  - name: cumulative_points_monotonic
+    description: >-
+      cumulativePoints never decreases (monotonically increasing).
+      Only addPoints() can modify it, always with positive amounts.
+      Ensures tier progression is irreversible.
+    scope: [cumulativePoints]
+
+  - name: tier_threshold_ordered
+    description: >-
+      TIER_TABLE thresholds are strictly increasing.
+      Bronze (0) < Silver (200) < Gold (500) < Platinum (1000).
+      Ensures unambiguous tier lookup via highest-matching threshold.
+    scope: [TIER_TABLE]
+
+  - name: multiplier_progression
+    description: >-
+      Tier multipliers are strictly increasing.
+      Bronze (1.0) < Silver (1.2) < Gold (1.5) < Platinum (2.0).
+      Incentivizes tier progression via higher point multipliers.
+    scope: [TIER_TABLE]
+
+  - name: unlock_pending_cleared
+    description: >-
+      unlockPending = true only transiently after tier-up.
+      Must be cleared by clearUnlock() before next settlement.
+      Prevents animation jitter on rapid state updates.
+    scope: [unlockPending]
+
+crossStoreWrites:
+  - store: offPeak
+    function: settle()
+    writes:
+      - target: loyaltyTierStore.addPoints(adjustedReward)
+        timing: "after outcome determination, before response completion"
+        formula: "adjustedReward = round(response.totalReward * loyaltyTierStore.multiplier)"
+        atomicGuard: true
+
+  - store: wallet
+    function: credit()
+    receives: adjustedReward
+    timing: "immediately after loyaltyTierStore.addPoints() returns"
+    description: >-
+      offPeak.settle() passes multiplied points to wallet.credit().
+      Loyalty multiplier is applied transitively through settlement flow.
+
+futureBackendMapping:
+  table: user_loyalty_tiers
+  primaryKey: [user_id]
+  description: >-
+    Future relational backend will map LoyaltyTierStore to a user_loyalty_tiers table
+    with one row per user (singleton, updated on every addPoints call).
+  expectedColumns:
+    - user_id
+    - cumulative_points
+    - current_tier_name
+    - current_multiplier
+    - next_tier_threshold
+    - progress_percent
+    - unlock_pending
+    - created_at
+    - updated_at
