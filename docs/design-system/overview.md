@@ -94,6 +94,28 @@ Designed primarily for mobile phones with considerations for accessibility and r
 
 ---
 
+---
+
+## Module 3 — 夢幻特權 (Dream Privilege / Metro Loyalty Tier)
+
+**Accent color:** Rose (#E91E63) — used for tier badges, shield glow, EXP bar fill, unlock animation
+
+**Visual approach:** Aspirational achievement — feels like unlocking a VIP status, not a corporate loyalty card. Warm prestige.
+
+**Brand personality:** The loyalty tier system uses rose accents to signal "exclusive achievement / earned status." The tier shield hero card (dark glassmorphism, ComboCard style) displays the rider's current tier with an EXP bar filled in rose. Tier-up triggers a one-shot unlock animation: scale-bounce (400ms) + rose glow pulse (600ms).
+
+**Token set:** Rose (#E91E63) drives all tier-specific accents. Analogous to Module 2's teal tokens:
+- `--color-tier-accent: #E91E63`
+- `--color-tier-accent-dim: rgba(233, 30, 99, 0.12)`
+- `--color-tier-accent-border: rgba(233, 30, 99, 0.35)`
+- `--color-tier-accent-glow: rgba(233, 30, 99, 0.5)`
+
+**Components:** TierShieldCard (hero, dark glass with shield icon and rose EXP bar), CurrentPerksCard (glass with solid rose border), NextTierCard (glass with dashed dim border, locked state), UnlockAnimation (one-shot fullscreen overlay).
+
+**Motion posture:** One-shot unlock animation only (scale-bounce 400ms + rose glow pulse 600ms). No looping content animations. `prefers-reduced-motion` respected: reduce to opacity fade.
+
+---
+
 ## Next Steps
 
 - See **[tokens.md](./tokens.md)** for complete CSS custom property definitions

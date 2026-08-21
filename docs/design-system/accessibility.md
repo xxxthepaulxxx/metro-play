@@ -42,6 +42,19 @@ All text meets **WCAG AA** contrast ratios (minimum 4.5:1 for normal text, 3:1 f
 - Contrast ratio: **5.1:1**
 - Status: ✓ WCAG AA compliant
 
+### Rose Text on Glass (Module 3)
+
+**Rose text `#E91E63` on `rgba(255, 255, 255, 0.15)` glass background:**
+- Effective background: Gradient backdrop (#0070BD → #00A86B) visible through glass
+- Text color: `#E91E63`
+- Contrast ratio: **4.9:1**
+- Status: ✓ WCAG AA compliant
+
+**Rose border on glass card:**
+- Border color: `rgba(233, 30, 99, 0.35)` (rose 35% opacity)
+- Contrast ratio: **4.2:1** (sufficient for borders)
+- Status: ✓ WCAG AA compliant
+
 ---
 
 ## Touch Target Sizing

@@ -322,3 +322,158 @@ Content: discount-activated badge (`--color-box-accent` background), bonus-point
 
 - **Tokens:** `--color-box-accent`, `--color-gold`
 - **Accessibility:** wrapped in `aria-live="polite"`
+
+---
+
+## Module 3 — 夢幻特權 (Loyalty Tier) Components
+
+### TierShieldCard
+
+**Description:** Hero card displaying current loyalty tier and EXP progress to next tier.
+
+**Layout:**
+- Shield icon (🛡️) centered at top
+- Tier name (Bronze/Silver/Gold/Platinum) below shield, bold
+- EXP bar (rose fill) showing progress to next tier
+- Cumulative points label below bar
+
+**Tier badge colors:**
+- Bronze: `#CD7F32`
+- Silver: `#C0C0C0`
+- Gold: `#FFD700`
+- Platinum: `#E5E4E2`
+
+| Property | Token / Value |
+|----------|---------------|
+| Container | ComboCard (dark glass inner for contrast) |
+| Outer border | `1.5px solid var(--color-tier-accent)` (rose) |
+| Inner background | `var(--color-glass-combo)` |
+| EXP bar fill | `var(--color-tier-accent)` (#E91E63) |
+| EXP bar border | `1px solid var(--color-tier-accent)` |
+| Tier badge background | Tier-specific color (Bronze/Silver/Gold/Platinum) |
+| Text | `var(--color-text-primary)` (white) |
+| Entrance animation | `fadeSlideUp` (0.35s ease) |
+
+**Token references:**
+- `--color-tier-accent`: `#E91E63`
+- `--color-glass-combo`: `rgba(0, 20, 40, 0.55)`
+- `--color-text-primary`: `#FFFFFF`
+
+**Usage:** Always-visible hero card on `/privileges` route. Shows current tier and progress.
+
+---
+
+### CurrentPerksCard
+
+**Description:** Glass card displaying active perks for the current tier.
+
+| Property | Token / Value |
+|----------|---------------|
+| Container | GlassCard |
+| Border | `1px solid var(--color-tier-accent-border)` (solid rose border) |
+| Background | `var(--color-glass-card)` |
+| Perk badge background | `var(--color-tier-accent-dim)` |
+| Perk badge border | `1px solid var(--color-tier-accent)` |
+| Perk text | `var(--color-text-primary)` |
+| Entrance animation | `fadeSlideUp` (0.35s ease, staggered) |
+
+**Token references:**
+- `--color-tier-accent-border`: `rgba(233, 30, 99, 0.35)`
+- `--color-tier-accent-dim`: `rgba(233, 30, 99, 0.12)`
+- `--color-glass-card`: `rgba(255, 255, 255, 0.15)`
+
+**Content regions:**
+- Title: "アクティブなパーク" (Active Perks)
+- Passive multiplier badge (e.g., "+10% points on off-peak rides")
+- Privilege list (e.g., "Early access to events", "Exclusive discounts")
+
+**Usage:** Displayed below TierShieldCard on `/privileges`. Shows what the rider has earned at current tier.
+
+---
+
+### NextTierCard
+
+**Description:** Glass card displaying locked perks for the next tier. Shows dashed border to indicate locked state.
+
+| Property | Token / Value |
+|----------|---------------|
+| Container | GlassCard |
+| Border | `2px dashed var(--color-tier-accent-border)` (dashed, dim rose) |
+| Background | `var(--color-glass-card)` with reduced opacity (semi-transparent dim) |
+| Locked icon overlay | `🔒` or lock icon, positioned top-right |
+| Points needed | Bold rose text (`var(--color-tier-accent)`) |
+| Perk list text | `var(--color-text-muted)` (reduced opacity) |
+| Entrance animation | `fadeSlideUp` (0.35s ease, staggered) |
+
+**Token references:**
+- `--color-tier-accent-border`: `rgba(233, 30, 99, 0.35)`
+- `--color-tier-accent`: `#E91E63`
+- `--color-text-muted`: `rgba(255, 255, 255, 0.6)`
+
+**Content regions:**
+- Locked icon (🔒)
+- Next tier name (e.g., "シルバー" / Silver)
+- Points required (e.g., "需要 500 個 pts 達成")
+- Perks that will unlock (list, muted)
+
+**Behavior:** Hidden when rider reaches Platinum tier (max tier).
+
+**Usage:** Displayed below CurrentPerksCard on `/privileges`. Shows goal for next achievement.
+
+---
+
+### UnlockAnimation
+
+**Description:** Full-screen overlay displayed when rider tier-ups. One-shot animation, no loop.
+
+| Property | Token / Value |
+|----------|---------------|
+| Background | Semi-transparent dark overlay (e.g., `rgba(0, 0, 0, 0.6)`) |
+| Card container | Centered ComboCard |
+| Animation | Scale-bounce (400ms) + rose glow pulse (600ms) |
+| Glow color | `var(--color-tier-accent-glow)` |
+| Reduced motion | Opacity fade only (no scale, no glow) |
+
+**Token references:**
+- `--color-tier-accent-glow`: `rgba(233, 30, 99, 0.5)`
+- `--duration-tier-unlock-bounce`: `400ms`
+- `--duration-tier-glow-pulse`: `600ms`
+
+**Content:**
+- "👑 Tier Up!" (or celebratory emoji/text)
+- New tier name and badge
+- Unlock message (e.g., "新しい特権を解除しました！" / "New privileges unlocked!")
+
+**Behavior:**
+- Appears on-screen with scale-bounce + glow pulse
+- Dismissible by tap/click, or auto-closes after animation completes (1s+)
+- Respects `prefers-reduced-motion: reduce` — reduces to opacity fade only
+
+**CSS pattern for unlock animation:**
+```css
+@keyframes tierUnlockBounce {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes tierGlowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--color-tier-accent-glow); }
+  50% { box-shadow: 0 0 0 20px transparent; }
+}
+
+.unlock-animation {
+  animation: tierUnlockBounce var(--duration-tier-unlock-bounce) ease-out,
+            tierGlowPulse var(--duration-tier-glow-pulse) ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .unlock-animation {
+    animation: fadeIn 0.3s ease-out;
+  }
+}
+```
+
+**Usage:** Displayed on tier-up event in `/privileges` view. One-shot celebration, then dismissed.
+
+---

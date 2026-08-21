@@ -10,7 +10,13 @@ System_Boundary(metroPlay, "Metro Go Pass") {
 
   Container(module1, "Module 1 Views", "Vue 3 SFCs", "Module1Home, GameA, GameB, SettlementOverlay components")
 
+  Container(module3, "Module 3 Views", "Vue 3 SFCs", "PrivilegesHomeView, TierShieldCard, CurrentPerksCard, NextTierCard, UnlockAnimation")
+
   Container(store, "offPeak Store", "Pinia", "Game state: pledge, prediction, settlement, balance, carbonFundPool")
+
+  Container(loyaltyStore, "loyaltyTierStore", "Pinia", "Tier state: cumulativePoints, currentTier, multiplier, progress. Persisted to localStorage.")
+
+  Container(walletStore, "Wallet Store", "Pinia", "Shared cross-module point balance: balance (initial 500), deduct(), credit() actions")
 
   Container(mockApi, "Mock API", "TypeScript async functions", "Simulates commit, predict, verify, settle with realistic 300-800ms delay")
 
@@ -23,12 +29,24 @@ Rel(commuter, appShell, "Opens app", "HTTPS / file:// in mobile browser")
 
 Rel(appShell, module1, "Routes to", "Vue Router")
 
+Rel(appShell, module3, "Routes to /privileges", "Vue Router")
+
 Rel(module1, store, "Reads state / dispatches actions", "Vue composable")
+
+Rel(module3, loyaltyStore, "Reads tier state", "Vue composable")
+
+Rel(module1, walletStore, "Reads/deducts/credits points", "Vue composable")
+
+Rel(store, walletStore, "Delegates balance mutations", "Pinia cross-store import")
 
 Rel(store, mockApi, "Calls async functions", "import { commitPledge, ... }")
 
 Rel(mockApi, mockData, "Reads ridership data & calculates", "import { mockData, getActualRidership }")
 
 Rel(store, ls, "Persists after mutations", "pinia-plugin-persistedstate auto-write")
+
+Rel(loyaltyStore, ls, "Persists tier state", "pinia-plugin-persistedstate auto-write")
+
+Rel(walletStore, ls, "Persists balance", "pinia-plugin-persistedstate auto-write")
 
 @enduml

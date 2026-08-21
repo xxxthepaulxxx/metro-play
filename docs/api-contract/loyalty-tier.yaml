@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+  title: Metro Loyalty Tier — Store Contract
+  version: 0.1.0
+  description: >
+    Pinia store contract for the Metro Loyalty Tier system (Module 3 — 夢幻特權).
+    This module implements a tier progression system with point multipliers.
+    No mock API functions; all behavior is computed in-store and exposed
+    through reactive state, computed properties, and actions.
+
+# Store-only module: no HTTP paths, uses x-store-* extensions instead
+paths: {}
+
+components:
+  schemas:
+    TierName:
+      type: string
+      enum: [Bronze, Silver, Gold, Platinum]
+      description: Loyalty tier name
+
+    TierEntry:
+      type: object
+      description: Single tier definition from TIER_TABLE
+      required: [name, threshold, multiplier]
+      properties:
+        name:
+          $ref: '#/components/schemas/TierName'
+        threshold:
+          type: integer
+          description: Cumulative points required to unlock this tier
+          minimum: 0
+          example: 500
+        multiplier:
+          type: number
+          description: Point earning multiplier at this tier
+          minimum: 1.0
+          example: 1.5
+
+    TierTableConstant:
+      type: array
+      description: Complete loyalty tier table with all tiers and thresholds
+      items:
+        $ref: '#/components/schemas/TierEntry'
+      example:
+        - name: Bronze
+          threshold: 0
+          multiplier: 1.0
+        - name: Silver
+          threshold: 200
+          multiplier: 1.2
+        - name: Gold
+          threshold: 500
+          multiplier: 1.5
+        - name: Platinum
+          threshold: 1000
+          multiplier: 2.0
+
+    LoyaltyTierState:
+      type: object
+      description: Complete reactive state of the loyalty tier store
+      required:
+        - cumulativePoints
+        - unlockPending
+        - currentTier
+        - multiplier
+        - nextTierThreshold
+        - progress
+      properties:
+        cumulativePoints:
+          type: integer
+          description: Total cumulative points earned (initial 450)
+          minimum: 0
+          example: 450
+        unlockPending:
+          type: boolean
+          description: >
+            True after tier upgrade; reset by clearUnlock().
+            UI uses this flag to trigger unlock animation.
+          example: false
+        currentTier:
+          $ref: '#/components/schemas/TierEntry'
+          description: >
+            The highest tier entry where threshold <= cumulativePoints.
+            Automatically computed as cumulativePoints changes.
+        multiplier:
+          type: number
+          description: >
+            Read-only shorthand: currentTier.multiplier.
+            Used by offPeak.settle() to calculate adjusted reward.
+          minimum: 1.0
+          example: 1.5
+        nextTierThreshold:
+          oneOf:
+            - type: integer
+              minimum: 1
+            - type: 'null'
+          description: >
+            Next tier's threshold, or null if currentTier is Platinum.
+            Points needed to reach next tier: nextTierThreshold - cumulativePoints.
+          example: 1000
+        progress:
+          type: integer
+          description: >
+            Progress toward next tier as 0-100 integer percent.
+            Calculated as: (cumulativePoints - currentTier.threshold) /
+            (nextTierThreshold - currentTier.threshold) * 100.
+            100 if currentTier is Platinum (max tier).
+          minimum: 0
+          maximum: 100
+          example: 75
+
+  x-store-constants:
+    TIER_TABLE:
+      description: Exported constant defining all tiers and progression thresholds
+      schema:
+        $ref: '#/components/schemas/TierTableConstant'
+      value:
+        - name: Bronze
+          threshold: 0
+          multiplier: 1.0
+        - name: Silver
+          threshold: 200
+          multiplier: 1.2
+        - name: Gold
+          threshold: 500
+          multiplier: 1.5
+        - name: Platinum
+          threshold: 1000
+          multiplier: 2.0
+
+  x-store-actions:
+    addPoints:
+      description: >
+        Add points to cumulativePoints. If the addition causes a tier upgrade,
+        automatically set unlockPending=true to trigger unlock animation in UI.
+      signature: addPoints(n: number): void
+      parameters:
+        - name: n
+          type: integer
+          description: Points to add (typically adjusted reward from offPeak.settle())
+          minimum: 1
+      behavior: |
+        1. Store old tier: oldTier = currentTier
+        2. Add n to cumulativePoints
+        3. Compute new tier: newTier = currentTier
+        4. If newTier.name !== oldTier.name, set unlockPending = true
+        5. Side effect: may trigger UI unlock animation via unlockPending flag
+      example_call: store.addPoints(120)
+
+    clearUnlock:
+      description: >
+        Reset unlockPending to false. Called by UI component after unlock
+        animation completes to dismiss the animation state.
+      signature: clearUnlock(): void
+      behavior: |
+        Set unlockPending = false
+      example_call: store.clearUnlock()
+
+  x-cross-store-consumers:
+    - name: offPeak.ts
+      consumer: settle()
+      reads:
+        - property: multiplier
+          usage: >
+            Read currentTier.multiplier to calculate adjusted reward.
+            Example: adjustedReward = baseReward * store.multiplier
+      calls:
+        - action: addPoints(adjustedReward)
+          usage: >
+            After crediting wallet points, call addPoints() with the
+            adjusted reward. This accumulates lifetime points and may
+            trigger tier upgrades.
+          timing: Post-wallet-credit, same settlement transaction
+      example_flow: |
+        const multiplier = loyaltyStore.multiplier  // e.g., 1.5
+        const adjustedReward = baseReward * multiplier
+        wallet.creditPoints(adjustedReward)
+        loyaltyStore.addPoints(adjustedReward)
+        if (loyaltyStore.unlockPending) {
+          // Trigger tier unlock animation
+          showUnlockAnimation(loyaltyStore.currentTier)
+        }

@@ -264,6 +264,24 @@ All design tokens for the metro-off-peak-prediction design system. These CSS cus
 
 ---
 
+## Module 3 — 夢幻特權 (Dream Privilege / Loyalty Tier)
+
+```css
+/* ===== Module 3 — 夢幻特權 (Loyalty Tier) ===== */
+
+/* Accent palette — rose for achievement/prestige */
+--color-tier-accent:        #E91E63;
+--color-tier-accent-dim:    rgba(233, 30, 99, 0.12);
+--color-tier-accent-border: rgba(233, 30, 99, 0.35);
+--color-tier-accent-glow:   rgba(233, 30, 99, 0.5);
+
+/* Unlock animation timing */
+--duration-tier-unlock-bounce: 400ms;
+--duration-tier-glow-pulse:    600ms;
+```
+
+---
+
 ## Implementation Notes
 
 All tokens are designed for use in a pure HTML/CSS/JS environment with no build toolchain. Reference them directly in `<style>` blocks or linked stylesheets.
