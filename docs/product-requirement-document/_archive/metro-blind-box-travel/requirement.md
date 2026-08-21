@@ -1,6 +1,10 @@
 ---
-status: draft
+status: sliced
+sliced_at: 2026-08-21
 ---
+
+> **Archived (sliced 2026-08-21).** Build input only — not a live reference. Durable facts live in ADR / data-model / api-contract / runbooks.
+
 
 # 盲盒旅行 — Blind Box Travel (Module 2)
 
