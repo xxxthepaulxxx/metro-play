@@ -1,4 +1,4 @@
-import { getOffPeakWindow, getRidershipData } from "./mockData";
+import { DESTINATIONS, type Destination, getOffPeakWindow, getRidershipData } from "./mockData";
 
 export interface CommitmentResponse {
   pledgeId: string;
@@ -149,6 +149,65 @@ export async function verifyGateTap(
     outcome: "success",
   };
 }
+
+// ── Module 2: Blind Box Travel ─────────────────────────────────────────────
+
+export interface PurchaseBoxResponse {
+  boxId: string;
+  destination: Destination;
+}
+
+export interface RerollBoxResponse {
+  destination: Destination;
+}
+
+export interface ScanStationResponse {
+  verified: boolean;
+}
+
+export interface ScanMerchantResponse {
+  verified: boolean;
+  discountText: string;
+  bonusPoints: number;
+}
+
+export async function purchaseBox(_cost: number): Promise<PurchaseBoxResponse> {
+  await delay(400);
+  const dest = DESTINATIONS[Math.floor(Math.random() * DESTINATIONS.length)] as Destination;
+  return {
+    boxId: crypto.randomUUID(),
+    destination: { ...dest },
+  };
+}
+
+export async function rerollBox(_boxId: string, _cost: number): Promise<RerollBoxResponse> {
+  await delay(300);
+  const dest = DESTINATIONS[Math.floor(Math.random() * DESTINATIONS.length)] as Destination;
+  return { destination: { ...dest } };
+}
+
+export async function scanStation(
+  _boxId: string,
+  _stationId: string
+): Promise<ScanStationResponse> {
+  await delay(600);
+  return { verified: true };
+}
+
+export async function scanMerchant(
+  _boxId: string,
+  merchantCode: string
+): Promise<ScanMerchantResponse> {
+  await delay(600);
+  const dest = DESTINATIONS.find((d) => d.merchantCode === merchantCode);
+  return {
+    verified: true,
+    discountText: dest?.discountText ?? "特別優惠",
+    bonusPoints: dest?.bonusPoints ?? 80,
+  };
+}
+
+// ── Module 1: Settlement ───────────────────────────────────────────────────
 
 export async function settleGame(
   _pledgeId: string,
