@@ -18,6 +18,7 @@
 **Motion:** Entrance-only animations (fadeSlideUp staggered). No looping glow on content. Particles are decorative.
 **Typography:** System fonts only. Bold/heavy weights for titles. Never custom typefaces.
 **Winner sample:** docs/design-system/samples/index.html (variant-c — Metro Adventurer direction)
+**Module 2 (盲盒旅行):** Teal (#00BCD4) as accent for mystery/discovery mechanic. Blind box = CSS 3D glowing mystery cube with idle pulsing glow (affordance only — not looping content). Reveal = 180° Y-axis card flip (600ms ease-out). Re-roll = horizontal shake (300ms) then flip replay. All Module 2 cards use --color-box-accent-border and --color-box-accent-dim tint.
 
 ## Architecture Context
 
