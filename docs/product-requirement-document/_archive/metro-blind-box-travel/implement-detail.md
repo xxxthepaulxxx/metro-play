@@ -1,3 +1,10 @@
+---
+status: sliced
+sliced_at: 2026-08-21
+---
+
+> **Archived (sliced 2026-08-21).** Build input only — not a live reference. Durable facts live in ADR / data-model / api-contract / runbooks.
+
 # Implementation Detail — metro-blind-box-travel Module 2
 
 **Document Version:** 1.0

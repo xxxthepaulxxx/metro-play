@@ -16,7 +16,7 @@ vi.mock("../api/mockApi", () => ({
     gameB: { outcome: "correct", reward: 75, actualRidership: 520 },
     combo: true,
     totalReward: 250,
-    newBalance: 1250,
+    newBalance: 700,
     carbonFundDelta: 50,
     badge: "Off-Peak Master",
   }),
@@ -39,6 +39,7 @@ vi.mock("../api/mockData", () => ({
 }));
 
 import { useOffPeakStore } from "./offPeak";
+import { useWalletStore } from "./wallet";
 
 describe("useOffPeakStore", () => {
   beforeEach(() => {
@@ -48,41 +49,46 @@ describe("useOffPeakStore", () => {
   describe("commitPledge", () => {
     it("deducts balance when stake is valid", () => {
       const store = useOffPeakStore();
+      const wallet = useWalletStore();
       store.commitPledge(50);
-      expect(store.balance).toBe(950);
+      expect(wallet.balance).toBe(450);
       expect(store.pledge.staked).toBe(50);
       expect(store.pledge.committed).toBe(true);
     });
 
     it("is a no-op when stake is less than 10", () => {
       const store = useOffPeakStore();
-      const initialBalance = store.balance;
+      const wallet = useWalletStore();
+      const initialBalance = wallet.balance;
       store.commitPledge(5);
-      expect(store.balance).toBe(initialBalance);
+      expect(wallet.balance).toBe(initialBalance);
       expect(store.pledge.committed).toBe(false);
     });
 
     it("is a no-op when stake equals 9 (below minimum)", () => {
       const store = useOffPeakStore();
-      const initialBalance = store.balance;
+      const wallet = useWalletStore();
+      const initialBalance = wallet.balance;
       store.commitPledge(9);
-      expect(store.balance).toBe(initialBalance);
+      expect(wallet.balance).toBe(initialBalance);
       expect(store.pledge.committed).toBe(false);
     });
 
     it("is a no-op when stake exceeds balance", () => {
       const store = useOffPeakStore();
-      const initialBalance = store.balance;
+      const wallet = useWalletStore();
+      const initialBalance = wallet.balance;
       store.commitPledge(initialBalance + 1);
-      expect(store.balance).toBe(initialBalance);
+      expect(wallet.balance).toBe(initialBalance);
       expect(store.pledge.committed).toBe(false);
     });
 
     it("accepts stake exactly equal to balance", () => {
       const store = useOffPeakStore();
-      const initialBalance = store.balance;
+      const wallet = useWalletStore();
+      const initialBalance = wallet.balance;
       store.commitPledge(initialBalance);
-      expect(store.balance).toBe(0);
+      expect(wallet.balance).toBe(0);
       expect(store.pledge.committed).toBe(true);
     });
   });
@@ -90,13 +96,14 @@ describe("useOffPeakStore", () => {
   describe("settle", () => {
     it("double settle() call is a no-op (idempotent)", async () => {
       const store = useOffPeakStore();
+      const wallet = useWalletStore();
       store.commitPledge(50);
       await store.settle();
-      const balanceAfterFirst = store.balance;
+      const balanceAfterFirst = wallet.balance;
       const rewardAfterFirst = store.settlement.totalReward;
 
       await store.settle(); // second call should be no-op
-      expect(store.balance).toBe(balanceAfterFirst);
+      expect(wallet.balance).toBe(balanceAfterFirst);
       expect(store.settlement.totalReward).toBe(rewardAfterFirst);
       expect(store.settlement.done).toBe(true);
     });

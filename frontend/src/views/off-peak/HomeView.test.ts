@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
 import { createRouter, createWebHashHistory } from "vue-router";
 import { useOffPeakStore } from "../../stores/offPeak";
+import { useWalletStore } from "../../stores/wallet";
 import HomeView from "./HomeView.vue";
 
 const OFF_PEAK_BANNER_STUB = { template: '<div class="off-peak-banner" />' };
@@ -26,8 +27,9 @@ describe("HomeView", () => {
   it("displays balance via PointBadge", () => {
     const pinia = createPinia();
     setActivePinia(pinia);
-    const store = useOffPeakStore();
-    store.balance = 1234;
+    useOffPeakStore();
+    const wallet = useWalletStore();
+    wallet.credit(734); // 500 + 734 = 1,234
     const wrapper = mount(HomeView, {
       global: {
         plugins: [pinia, makeRouter()],

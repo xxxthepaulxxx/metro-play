@@ -2,7 +2,7 @@
   <div class="home-view">
     <header class="home-header">
       <h1 class="home-title">⚔️ 離峰大作戰</h1>
-      <PointBadge :points="store.balance" />
+      <PointBadge :points="wallet.balance" />
     </header>
 
     <OffPeakTimeBanner
@@ -44,9 +44,12 @@ import PointBadge from "../../components/PointBadge.vue";
 // biome-ignore lint/correctness/noUnusedImports: used in template
 import SettlementOverlay from "../../components/SettlementOverlay.vue";
 import { useOffPeakStore } from "../../stores/offPeak";
+import { useWalletStore } from "../../stores/wallet";
 
 // biome-ignore lint/correctness/noUnusedVariables: exposed to template
 const store = useOffPeakStore();
+// biome-ignore lint/correctness/noUnusedVariables: exposed to template
+const wallet = useWalletStore();
 </script>
 
 <style scoped>

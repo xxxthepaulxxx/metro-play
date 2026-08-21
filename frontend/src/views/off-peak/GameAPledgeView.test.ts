@@ -50,7 +50,7 @@ describe("GameAPledgeView", () => {
     const wrapper = mount(GameAPledgeView, {
       global: { plugins: [pinia, makeRouter()], stubs: { GameAPledgeConfirm: CONFIRM_STUB } },
     });
-    expect(wrapper.text()).toContain("1,000");
+    expect(wrapper.text()).toContain("500");
   });
 
   it("submit button is disabled when stake is below minimum", async () => {
