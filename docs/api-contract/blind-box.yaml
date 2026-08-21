@@ -1,0 +1,178 @@
+openapi: 3.0.3
+info:
+  title: Metro Blind Box Travel — Mock API Contract
+  version: 0.1.0
+  description: >
+    Client-side mock API functions for the Blind Box Travel module.
+    All functions are implemented in src/api/mockApi.ts and return
+    Promises with simulated delays. No real network calls.
+paths:
+  /blind-box/purchase:
+    post:
+      summary: Purchase a blind box
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [cost]
+              properties:
+                cost:
+                  type: number
+                  default: 30
+                  description: Points deducted from wallet
+      responses:
+        '200':
+          description: Box purchased successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseBoxResponse'
+        '400':
+          description: Insufficient balance (guard enforced in store)
+  /blind-box/{boxId}/reroll:
+    post:
+      summary: Re-roll the destination in an active blind box
+      parameters:
+        - name: boxId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [cost]
+              properties:
+                cost:
+                  type: number
+                  default: 10
+      responses:
+        '200':
+          description: Destination re-rolled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RerollBoxResponse'
+        '400':
+          description: Re-roll limit reached (rerollCount >= 1, guard in store)
+  /blind-box/{boxId}/scan-station:
+    post:
+      summary: Verify arrival at the destination MRT station
+      parameters:
+        - name: boxId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [stationId]
+              properties:
+                stationId:
+                  type: string
+                  description: MRT station name to match against destination.station
+      responses:
+        '200':
+          description: Scan result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScanStationResponse'
+  /blind-box/{boxId}/scan-merchant:
+    post:
+      summary: Verify visit to the partnered merchant
+      parameters:
+        - name: boxId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [merchantCode]
+              properties:
+                merchantCode:
+                  type: string
+                  description: QR code value to match against destination.merchantCode
+      responses:
+        '200':
+          description: Merchant verified with reward details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScanMerchantResponse'
+components:
+  schemas:
+    Destination:
+      type: object
+      required: [id, name, station, description, merchantCode, discountText, bonusPoints]
+      properties:
+        id:
+          type: string
+          example: "dest-001"
+        name:
+          type: string
+          description: Chinese name of the attraction/area
+          example: "北投溫泉"
+        station:
+          type: string
+          description: MRT station name (Chinese)
+          example: "新北投"
+        description:
+          type: string
+          description: One-sentence Chinese description
+        merchantCode:
+          type: string
+          description: Mock QR code value
+          example: "MERCH-BEITOU-001"
+        discountText:
+          type: string
+          description: Chinese string describing the discount
+          example: "溫泉湯屋85折"
+        bonusPoints:
+          type: integer
+          minimum: 50
+          maximum: 150
+    PurchaseBoxResponse:
+      type: object
+      required: [boxId, destination]
+      properties:
+        boxId:
+          type: string
+        destination:
+          $ref: '#/components/schemas/Destination'
+    RerollBoxResponse:
+      type: object
+      required: [destination]
+      properties:
+        destination:
+          $ref: '#/components/schemas/Destination'
+    ScanStationResponse:
+      type: object
+      required: [verified]
+      properties:
+        verified:
+          type: boolean
+    ScanMerchantResponse:
+      type: object
+      required: [verified, discountText, bonusPoints]
+      properties:
+        verified:
+          type: boolean
+        discountText:
+          type: string
+        bonusPoints:
+          type: integer
