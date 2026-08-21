@@ -1,0 +1,172 @@
+# docs/data-model/blind-box.yaml
+# Data model specification for the Metro Blind Box Travel module (Module 2)
+# These are TypeScript interfaces and Pinia store state shapes — client-side only.
+
+models:
+  Destination:
+    description: A random MRT-adjacent destination revealed in a blind box
+    source_file: src/api/types.ts
+    fields:
+      id:
+        type: string
+        nullable: false
+        format: "dest-NNN"
+        example: "dest-001"
+      name:
+        type: string
+        nullable: false
+        description: Chinese name of the attraction or area
+        example: "北投溫泉"
+      station:
+        type: string
+        nullable: false
+        description: MRT station name (Chinese)
+        example: "新北投"
+      description:
+        type: string
+        nullable: false
+        description: One-sentence Chinese description of the destination
+      merchantCode:
+        type: string
+        nullable: false
+        format: "MERCH-{AREA}-NNN"
+        example: "MERCH-BEITOU-001"
+      discountText:
+        type: string
+        nullable: false
+        description: Chinese string describing the merchant discount
+        example: "溫泉湯屋85折"
+      bonusPoints:
+        type: number
+        nullable: false
+        constraints:
+          minimum: 50
+          maximum: 150
+        description: Points credited to wallet on successful merchant verification
+
+  BlindBoxState:
+    description: Pinia store state for the active blind box journey
+    source_file: src/stores/blindBox.ts
+    store_name: useBlindBoxStore
+    fields:
+      activeBox:
+        type: object
+        nullable: false
+        fields:
+          id:
+            type: string | null
+            default: null
+            description: Box identifier, null when no active box
+          destination:
+            type: Destination | null
+            default: null
+            description: Null until a box is purchased
+          stationVerified:
+            type: boolean
+            default: false
+          merchantVerified:
+            type: boolean
+            default: false
+      reward:
+        type: object
+        nullable: false
+        fields:
+          done:
+            type: boolean
+            default: false
+            description: True after claimReward() is called
+          discountActivated:
+            type: boolean
+            default: false
+          bonusPoints:
+            type: number
+            default: 0
+      rerollCount:
+        type: number
+        default: 0
+        constraints:
+          maximum: 1
+        description: Number of re-rolls used; max 1 per box
+
+  WalletState:
+    description: Shared Pinia store state for user point balance (ADR-0006)
+    source_file: src/stores/wallet.ts
+    store_name: useWalletStore
+    fields:
+      balance:
+        type: number
+        default: 500
+        description: >
+          User's current point balance. Initial value 500 for hackathon demo.
+          Imported by both offPeak.ts and blindBox.ts stores.
+
+api_response_types:
+  PurchaseBoxResponse:
+    source_file: src/api/types.ts
+    fields:
+      boxId: { type: string }
+      destination: { type: Destination }
+
+  RerollBoxResponse:
+    source_file: src/api/types.ts
+    fields:
+      destination: { type: Destination }
+
+  ScanStationResponse:
+    source_file: src/api/types.ts
+    fields:
+      verified: { type: boolean }
+
+  ScanMerchantResponse:
+    source_file: src/api/types.ts
+    fields:
+      verified: { type: boolean }
+      discountText: { type: string }
+      bonusPoints: { type: number }
+
+static_datasets:
+  DESTINATIONS:
+    description: 8 hard-coded Taipei MRT destination records used by mock API
+    source_file: src/api/mockData.ts
+    count: 8
+    records:
+      - id: dest-001
+        name: 北投溫泉
+        station: 新北投
+        merchantCode: MERCH-BEITOU-001
+        bonusPoints: 100
+      - id: dest-002
+        name: 永康街
+        station: 東門
+        merchantCode: MERCH-YONGKANG-001
+        bonusPoints: 80
+      - id: dest-003
+        name: 西門町
+        station: 西門
+        merchantCode: MERCH-XIMEN-001
+        bonusPoints: 70
+      - id: dest-004
+        name: 淡水老街
+        station: 淡水
+        merchantCode: MERCH-TAMSUI-001
+        bonusPoints: 120
+      - id: dest-005
+        name: 貓空
+        station: 動物園
+        merchantCode: MERCH-MAOKONG-001
+        bonusPoints: 150
+      - id: dest-006
+        name: 象山步道
+        station: 象山
+        merchantCode: MERCH-XIANGSHAN-001
+        bonusPoints: 90
+      - id: dest-007
+        name: 大稻埕
+        station: 大橋頭
+        merchantCode: MERCH-DADAOCHENG-001
+        bonusPoints: 110
+      - id: dest-008
+        name: 饒河夜市
+        station: 松山
+        merchantCode: MERCH-RAOHE-001
+        bonusPoints: 60
