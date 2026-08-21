@@ -24,8 +24,20 @@ const router = createRouter({
       component: () => import("../views/Settlement.vue"),
     },
     {
-      path: "/module2",
-      component: () => import("../views/Module2Placeholder.vue"),
+      path: "/blind-box",
+      component: () => import("../views/blind-box/HomeView.vue"),
+    },
+    {
+      path: "/blind-box/reveal",
+      component: () => import("../views/blind-box/RevealView.vue"),
+    },
+    {
+      path: "/blind-box/scan-station",
+      component: () => import("../views/blind-box/ScanStationView.vue"),
+    },
+    {
+      path: "/blind-box/scan-merchant",
+      component: () => import("../views/blind-box/ScanMerchantView.vue"),
     },
     {
       path: "/module3",

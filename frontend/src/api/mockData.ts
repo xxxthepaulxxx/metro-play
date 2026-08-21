@@ -1,5 +1,90 @@
 export type MrtLine = "wenhu" | "bannan";
 
+export interface Destination {
+  id: string;
+  name: string;
+  station: string;
+  description: string;
+  merchantCode: string;
+  discountText: string;
+  bonusPoints: number;
+}
+
+export const DESTINATIONS: Destination[] = [
+  {
+    id: "dest-001",
+    name: "北投溫泉",
+    station: "新北投",
+    description: "享受台北最著名的天然溫泉鄉",
+    merchantCode: "MERCH-BEITOU-001",
+    discountText: "溫泉湯屋85折",
+    bonusPoints: 100,
+  },
+  {
+    id: "dest-002",
+    name: "永康街",
+    station: "東門",
+    description: "品嘗最道地的台灣傳統美食街",
+    merchantCode: "MERCH-YONGKANG-001",
+    discountText: "鼎泰豐套餐9折",
+    bonusPoints: 80,
+  },
+  {
+    id: "dest-003",
+    name: "西門町",
+    station: "西門",
+    description: "感受台北年輕文化的購物聖地",
+    merchantCode: "MERCH-XIMEN-001",
+    discountText: "指定商品8折",
+    bonusPoints: 70,
+  },
+  {
+    id: "dest-004",
+    name: "淡水老街",
+    station: "淡水",
+    description: "漫步百年歷史的淡水河畔古街",
+    merchantCode: "MERCH-TAMSUI-001",
+    discountText: "老街紀念品85折",
+    bonusPoints: 120,
+  },
+  {
+    id: "dest-005",
+    name: "貓空",
+    station: "動物園",
+    description: "搭乘纜車俯瞰台北盆地的絕美茶園",
+    merchantCode: "MERCH-MAOKONG-001",
+    discountText: "茶館下午茶9折",
+    bonusPoints: 150,
+  },
+  {
+    id: "dest-006",
+    name: "象山步道",
+    station: "象山",
+    description: "征服台北最受歡迎的市區登山步道",
+    merchantCode: "MERCH-XIANGSHAN-001",
+    discountText: "登山補給品85折",
+    bonusPoints: 90,
+  },
+  {
+    id: "dest-007",
+    name: "大稻埕",
+    station: "大橋頭",
+    description: "探索充滿歷史風情的傳統茶行聚落",
+    merchantCode: "MERCH-DADAOCHENG-001",
+    discountText: "茶葉伴手禮9折",
+    bonusPoints: 110,
+  },
+  {
+    id: "dest-008",
+    name: "饒河夜市",
+    station: "松山",
+    description: "穿梭人潮擁擠的台北人氣觀光夜市",
+    merchantCode: "MERCH-RAOHE-001",
+    discountText: "夜市美食券95折",
+    bonusPoints: 60,
+  },
+];
+
 export interface OffPeakWindow {
   start: string; // "HH:MM"
   end: string; // "HH:MM"

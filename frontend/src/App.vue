@@ -38,7 +38,16 @@ const tabs = [
     to: "/off-peak",
     activePaths: ["/off-peak", "/off-peak/game-a", "/off-peak/game-b", "/off-peak/settlement"],
   },
-  { label: "🎁 盲盒旅行", to: "/module2", activePaths: ["/module2"] },
+  {
+    label: "🎁 盲盒旅行",
+    to: "/blind-box",
+    activePaths: [
+      "/blind-box",
+      "/blind-box/reveal",
+      "/blind-box/scan-station",
+      "/blind-box/scan-merchant",
+    ],
+  },
   { label: "👑 夢幻特權", to: "/module3", activePaths: ["/module3"] },
   { label: "🗺️ 城市RPG", to: "/module4", activePaths: ["/module4"] },
 ] as const;

@@ -47,11 +47,18 @@
   --font-weight-extra-bold: 800;
   --font-weight-black: 900;
 
+  /* Module 2 — Blind Box accent */
+  --color-box-accent: #00bcd4;
+  --color-box-accent-border: rgba(0, 188, 212, 0.4);
+  --color-box-accent-dim: rgba(0, 188, 212, 0.12);
+
   /* Motion */
   --duration-fast: 0.15s;
   --duration-normal: 0.2s;
   --duration-slow: 0.35s;
   --duration-float: 6s;
+  --duration-box-flip: 600ms;
+  --duration-box-shake: 300ms;
 
   --timing-ease: ease;
   --timing-ease-out: ease-out;
