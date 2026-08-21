@@ -1,0 +1,6 @@
+{
+  "env": {
+    "SMOKE_HEALTH_URL": "http://localhost:8000/healthz",
+    "SMOKE_SPA_URL": "http://localhost:8000/"
+  }
+}
