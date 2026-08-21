@@ -7,5 +7,5 @@ services:
       dockerfile: Dockerfile
     image: metro-play-frontend:dev
     ports:
-      - "${FRONTEND_PORT:-5173}:80"
+      - "${FRONTEND_PORT:-8000}:80"
     restart: unless-stopped
