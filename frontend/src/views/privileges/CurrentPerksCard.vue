@@ -13,6 +13,7 @@
 <script setup lang="ts">
 import { useLoyaltyTierStore } from "../../stores/loyaltyTier";
 
+// biome-ignore lint/correctness/noUnusedVariables: used in template
 const store = useLoyaltyTierStore();
 </script>
 

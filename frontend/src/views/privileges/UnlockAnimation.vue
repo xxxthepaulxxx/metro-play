@@ -25,6 +25,7 @@ const tierEmoji = computed(() => TIER_META[store.currentTier.name]?.emoji ?? "ðŸ
 // biome-ignore lint/correctness/noUnusedVariables: used in template
 const tierName = computed(() => TIER_META[store.currentTier.name]?.name ?? store.currentTier.name);
 
+// biome-ignore lint/correctness/noUnusedVariables: used in template
 function onAnimationEnd() {
   store.clearUnlock();
 }
