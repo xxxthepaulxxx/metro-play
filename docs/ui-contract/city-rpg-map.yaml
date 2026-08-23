@@ -1,0 +1,49 @@
+surface: city-rpg-map
+route: /rpg
+view: CityRpgMapView
+description: |
+  Displays the rider's city RPG progress: a hero progress summary at top,
+  followed by a vertical scrolling list of DistrictCards (one per district).
+  Locked districts show dashed amber border and lock icon; unlocked districts
+  show solid amber border, checkmark badge, and filled progress bar.
+  UnlockBurstAnimation overlay appears on district completion.
+
+actors:
+  - rider
+
+regions:
+  - id: progress-summary
+    role: banner
+    accessible_name: "Overall district progress"
+    description: Hero region showing total districts unlocked out of total
+
+  - id: district-list
+    role: list
+    accessible_name: "City districts"
+    description: Vertical scrolling list of DistrictCard items
+
+  - id: unlock-overlay
+    role: dialog
+    accessible_name: "District unlocked"
+    description: One-shot UnlockBurstAnimation overlay on district completion
+
+primary_actions:
+  - role: link
+    accessible_name: "{district_name} — {locked|unlocked}"
+    component: DistrictCard
+    navigates_to: /rpg/district/:id
+
+interactions:
+  - trigger: tap DistrictCard
+    action: navigate to /rpg/district/:id
+    guard: none (both locked and unlocked districts are tappable)
+  - trigger: district completion event
+    action: show UnlockBurstAnimation overlay
+    guard: all required tasks in district completed
+
+acceptance_criteria:
+  - Each DistrictCard is keyboard-navigable with aria-label including district name and lock status
+  - UnlockBurstAnimation respects prefers-reduced-motion (fade only)
+  - Tab 4 global nav entry links to /rpg
+  - Progress summary region updates on district unlock
+  - Minimum 44px touch target on each DistrictCard

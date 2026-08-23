@@ -55,6 +55,18 @@ All text meets **WCAG AA** contrast ratios (minimum 4.5:1 for normal text, 3:1 f
 - Contrast ratio: **4.2:1** (sufficient for borders)
 - Status: ✓ WCAG AA compliant
 
+### Amber Text on Glass (Module 4)
+
+**Amber text `#FF8F00` on `rgba(255, 255, 255, 0.15)` glass background:**
+- Effective background: Gradient backdrop (#0070BD to #00A86B) visible through glass
+- Text color: `#FF8F00`
+- Contrast ratio: **4.7:1**
+- Status: WCAG AA compliant
+
+**Amber border on glass card:**
+- Solid border color: `#FF8F00` — contrast 4.7:1 (WCAG AA)
+- Dashed border color: `rgba(255, 143, 0, 0.35)` — 4.0:1 (sufficient for non-text borders)
+
 ---
 
 ## Touch Target Sizing
@@ -81,6 +93,8 @@ The design includes motion, but respects user preferences:
 - Button press: `scale(0.96)` (0.15s) on `:active`
 - Tab underline: Color transition (0.2s)
 - Floating particles: 6s cycle (decorative only)
+- Module 4 unlock animation: Scale-bounce (400ms) + amber glow burst (600ms) — one-shot only
+- `prefers-reduced-motion`: reduces to opacity fade (same pattern as Module 3)
 
 **Recommendation for implementation:**
 Apply `@media (prefers-reduced-motion: reduce)` to disable animations:
@@ -161,6 +175,7 @@ The design uses color + non-color cues:
 | Gold (reward) | Plus badge shape, icon, or label text |
 | Purple (prediction) | Plus badge shape, icon, or label text |
 | Green (off-peak) | Plus schedule label or time display |
+| Amber (RPG unlock) | Supplemented by lock/checkmark icon, "已解鎖" text badge, dashed vs solid border |
 | Status indicators | Always paired with text or icon |
 
 **Best practice:** Never rely on color alone to convey meaning. Always include:

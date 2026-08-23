@@ -116,6 +116,26 @@ Designed primarily for mobile phones with considerations for accessibility and r
 
 ---
 
+## Module 4 — 城市RPG (City RPG Unlock)
+
+**Accent color:** Amber (#FF8F00) — used for district borders, unlock glow, progress bar fill, unlock animation burst
+
+**Visual approach:** Collectible map exploration — feels like uncovering a city one district at a time. Warm amber evokes treasure discovery and earned mastery.
+
+**Brand personality:** The city RPG uses amber accents to signal "exploration achievement / territory claimed." Districts appear as DistrictCards in a vertical scrolling list on `/rpg`. Locked districts show a dashed amber border and lock icon; unlocked districts show a solid amber border, checkmark badge, and filled progress bar. Unlocking triggers a one-shot animation: scale-bounce (0 to 1.08 to 1.0, 400ms) + radial amber glow expanding outward (600ms).
+
+**Token set:** Amber (#FF8F00) drives all RPG-specific accents. Analogous to Module 3's rose tokens:
+- `--color-rpg-accent: #FF8F00`
+- `--color-rpg-accent-dim: rgba(255, 143, 0, 0.12)`
+- `--color-rpg-accent-border: rgba(255, 143, 0, 0.35)`
+- `--color-rpg-accent-glow: rgba(255, 143, 0, 0.5)`
+
+**Components:** DistrictCard (locked/unlocked states), DistrictDetailCard (detail view hero), UnlockBurstAnimation (one-shot fullscreen overlay on district unlock).
+
+**Motion posture:** One-shot unlock animation only (scale-bounce 400ms + amber glow burst 600ms). No looping content animations. `prefers-reduced-motion` respected: reduce to opacity fade.
+
+---
+
 ## Next Steps
 
 - See **[tokens.md](./tokens.md)** for complete CSS custom property definitions

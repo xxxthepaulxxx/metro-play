@@ -240,6 +240,31 @@ All design tokens for the metro-off-peak-prediction design system. These CSS cus
   /* Filters */
   --blur-card: blur(12px);
   --blur-tab: blur(20px);
+
+  /* Module 2 — 盲盒旅行 (Blind Box Travel) */
+  --color-box-accent:        #00BCD4;
+  --color-box-accent-dim:    rgba(0, 188, 212, 0.15);
+  --color-box-accent-border: rgba(0, 188, 212, 0.4);
+  --color-box-glow:          rgba(0, 188, 212, 0.5);
+  --duration-box-flip:       600ms;
+  --duration-box-shake:      300ms;
+  --timing-flip:             cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Module 3 — 夢幻特權 (Loyalty Tier) */
+  --color-tier-accent:        #E91E63;
+  --color-tier-accent-dim:    rgba(233, 30, 99, 0.12);
+  --color-tier-accent-border: rgba(233, 30, 99, 0.35);
+  --color-tier-accent-glow:   rgba(233, 30, 99, 0.5);
+  --duration-tier-unlock-bounce: 400ms;
+  --duration-tier-glow-pulse:    600ms;
+
+  /* Module 4 — City RPG */
+  --color-rpg-accent:        #FF8F00;
+  --color-rpg-accent-dim:    rgba(255, 143, 0, 0.12);
+  --color-rpg-accent-border: rgba(255, 143, 0, 0.35);
+  --color-rpg-accent-glow:   rgba(255, 143, 0, 0.5);
+  --duration-rpg-unlock-bounce: 400ms;
+  --duration-rpg-glow-burst:    600ms;
 }
 ```
 
@@ -278,6 +303,24 @@ All design tokens for the metro-off-peak-prediction design system. These CSS cus
 /* Unlock animation timing */
 --duration-tier-unlock-bounce: 400ms;
 --duration-tier-glow-pulse:    600ms;
+```
+
+---
+
+## Module 4 — 城市RPG (City RPG Unlock)
+
+```css
+/* ===== Module 4 — 城市RPG (City RPG Unlock) ===== */
+
+/* Accent palette — amber for exploration/achievement */
+--color-rpg-accent:        #FF8F00;
+--color-rpg-accent-dim:    rgba(255, 143, 0, 0.12);
+--color-rpg-accent-border: rgba(255, 143, 0, 0.35);
+--color-rpg-accent-glow:   rgba(255, 143, 0, 0.5);
+
+/* Unlock animation timing */
+--duration-rpg-unlock-bounce: 400ms;
+--duration-rpg-glow-burst:    600ms;
 ```
 
 ---

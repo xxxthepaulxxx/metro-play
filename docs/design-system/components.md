@@ -477,3 +477,93 @@ Content: discount-activated badge (`--color-box-accent` background), bonus-point
 **Usage:** Displayed on tier-up event in `/privileges` view. One-shot celebration, then dismissed.
 
 ---
+
+## Module 4 — City RPG Unlock Components
+
+### DistrictCard
+
+Glass card for a single city district in the vertical scrolling list on `/rpg`. Two visual states:
+
+**Locked state:**
+
+| Property | Token / Value |
+|----------|---------------|
+| Container | GlassCard |
+| Border | `2px dashed var(--color-rpg-accent-border)` |
+| Background | `var(--color-glass-card)` |
+| Lock icon | 🔒, positioned top-right |
+| District name text | `var(--color-text-muted)` |
+| Progress bar | Empty / zero-fill |
+| Entrance animation | `fadeSlideUp` (0.35s ease, staggered) |
+
+**Unlocked state:**
+
+| Property | Token / Value |
+|----------|---------------|
+| Container | GlassCard |
+| Border | `1px solid var(--color-rpg-accent)` |
+| Background | `var(--color-glass-card)` |
+| Badge | Checkmark + "已解鎖" pill, `var(--color-rpg-accent)` text on `var(--color-rpg-accent-dim)` bg |
+| District name text | `var(--color-text-primary)` |
+| Progress bar fill | `var(--color-rpg-accent)` |
+| Entrance animation | `fadeSlideUp` (0.35s ease, staggered) |
+
+**Accessibility:** `role="link"`, `aria-label` includes district name and locked/unlocked status. Focus-visible ring uses `var(--color-rpg-accent)`. Minimum 44px touch target.
+
+**Usage:** Vertical list on `/rpg`. Tap navigates to `/rpg/district/:id`.
+
+---
+
+### DistrictDetailCard
+
+Hero card on `/rpg/district/:id`. ComboCard style with amber border.
+
+| Property | Token / Value |
+|----------|---------------|
+| Container | ComboCard (dark glass inner) |
+| Outer border | `1.5px solid var(--color-rpg-accent)` |
+| Inner background | `var(--color-glass-combo)` |
+| District name text | `var(--color-text-primary)` (bold) |
+| Progress bar fill | `var(--color-rpg-accent)` |
+| Task list item text | `var(--color-text-secondary)` |
+| Entrance animation | `fadeSlideUp` (0.35s ease) |
+
+**Content regions:** District name (hero), progress bar with fraction label, task checklist, back navigation link.
+
+---
+
+### UnlockBurstAnimation
+
+Full-screen overlay on district unlock. One-shot, no loop. Pattern mirrors Module 3's UnlockAnimation.
+
+| Property | Token / Value |
+|----------|---------------|
+| Background | `rgba(0, 0, 0, 0.6)` |
+| Card | Centered ComboCard |
+| Animation | Scale-bounce (0→1.08→1.0, 400ms) + radial amber glow (600ms) |
+| Glow color | `var(--color-rpg-accent-glow)` |
+| Reduced motion | Opacity fade only |
+
+**CSS keyframes:**
+
+```css
+@keyframes rpgUnlockBounce {
+  0%   { transform: scale(0); opacity: 0; }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes rpgGlowBurst {
+  0%   { box-shadow: 0 0 0 0 var(--color-rpg-accent-glow); }
+  100% { box-shadow: 0 0 0 30px transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rpg-unlock-animation { animation: fadeIn 0.3s ease-out; }
+}
+```
+
+**Content:** celebratory emoji, district name, "已完成！" message.
+**Behavior:** Auto-closes after animation completes (~1s) or on tap.
+
+---

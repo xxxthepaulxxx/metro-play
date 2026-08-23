@@ -1,0 +1,43 @@
+surface: district-detail
+route: /rpg/district/:id
+view: DistrictDetailView
+description: |
+  Detail view for a single city district. Shows a hero DistrictDetailCard
+  (ComboCard style with amber border) containing district name, progress bar,
+  and task checklist. Back navigation returns to /rpg.
+
+actors:
+  - rider
+
+regions:
+  - id: district-hero
+    role: banner
+    accessible_name: "{district_name} details"
+    description: DistrictDetailCard hero with progress bar and task checklist
+
+  - id: task-list
+    role: list
+    accessible_name: "District tasks"
+    description: Checklist of tasks — completed items checked, remaining unchecked
+
+  - id: back-nav
+    role: navigation
+    accessible_name: "Back to city map"
+    description: Back link returning to /rpg
+
+primary_actions:
+  - role: link
+    accessible_name: "Back to city map"
+    component: BackLink
+    navigates_to: /rpg
+
+interactions:
+  - trigger: tap back link
+    action: navigate to /rpg
+
+acceptance_criteria:
+  - DistrictDetailCard displays correct district name and progress
+  - Task checklist reflects completed vs remaining tasks
+  - Back navigation returns to /rpg
+  - Focus-visible ring on back link uses var(--color-rpg-accent)
+  - Minimum 44px touch target on back link
