@@ -48,7 +48,7 @@ const tabs = [
       "/blind-box/scan-merchant",
     ],
   },
-  { label: "👑 夢幻特權", to: "/module3", activePaths: ["/module3"] },
+  { label: "👑 夢幻特權", to: "/privileges", activePaths: ["/privileges"] },
   { label: "🗺️ 城市RPG", to: "/module4", activePaths: ["/module4"] },
 ] as const;
 

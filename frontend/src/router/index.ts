@@ -40,8 +40,8 @@ const router = createRouter({
       component: () => import("../views/blind-box/ScanMerchantView.vue"),
     },
     {
-      path: "/module3",
-      component: () => import("../views/Module3Placeholder.vue"),
+      path: "/privileges",
+      component: () => import("../views/privileges/PrivilegesHomeView.vue"),
     },
     {
       path: "/module4",
