@@ -6,11 +6,17 @@
     </header>
 
     <TierShieldCard />
+    <CurrentPerksCard />
+    <NextTierCard />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useWalletStore } from "../../stores/wallet";
+// biome-ignore lint/correctness/noUnusedImports: used as component in template
+import CurrentPerksCard from "./CurrentPerksCard.vue";
+// biome-ignore lint/correctness/noUnusedImports: used as component in template
+import NextTierCard from "./NextTierCard.vue";
 // biome-ignore lint/correctness/noUnusedImports: used as component in template
 import TierShieldCard from "./TierShieldCard.vue";
 
