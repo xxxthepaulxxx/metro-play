@@ -52,6 +52,14 @@
   --color-box-accent-border: rgba(0, 188, 212, 0.4);
   --color-box-accent-dim: rgba(0, 188, 212, 0.12);
 
+  /* Module 3 — Loyalty Tier accent */
+  --color-tier-accent: #e91e63;
+  --color-tier-accent-dim: rgba(233, 30, 99, 0.12);
+  --color-tier-accent-border: rgba(233, 30, 99, 0.35);
+  --color-tier-accent-glow: rgba(233, 30, 99, 0.5);
+  --duration-tier-unlock-bounce: 400ms;
+  --duration-tier-glow-pulse: 600ms;
+
   /* Motion */
   --duration-fast: 0.15s;
   --duration-normal: 0.2s;
