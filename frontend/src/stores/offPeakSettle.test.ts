@@ -48,9 +48,9 @@ vi.mock("../api/mockData", () => ({
   }),
 }));
 
+import { useLoyaltyTierStore } from "./loyaltyTier";
 import { useOffPeakStore } from "./offPeak";
 import { useWalletStore } from "./wallet";
-import { useLoyaltyTierStore } from "./loyaltyTier";
 
 describe("offPeak.settle() — tier multiplier integration", () => {
   beforeEach(() => {
