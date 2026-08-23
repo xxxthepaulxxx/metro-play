@@ -6,8 +6,12 @@
     </header>
 
     <TierShieldCard />
+<<<<<<< HEAD
     <CurrentPerksCard />
     <NextTierCard />
+=======
+    <UnlockAnimation />
+>>>>>>> 53bfd8e (feat(loyalty-tier): UnlockAnimation one-shot tier reveal — Slice #31)
   </div>
 </template>
 
@@ -19,6 +23,8 @@ import CurrentPerksCard from "./CurrentPerksCard.vue";
 import NextTierCard from "./NextTierCard.vue";
 // biome-ignore lint/correctness/noUnusedImports: used as component in template
 import TierShieldCard from "./TierShieldCard.vue";
+// biome-ignore lint/correctness/noUnusedImports: used as component in template
+import UnlockAnimation from "./UnlockAnimation.vue";
 
 // biome-ignore lint/correctness/noUnusedVariables: used in template
 const wallet = useWalletStore();
