@@ -44,6 +44,16 @@
         <span class="total-value">+{{ store.settlement.totalReward }} 捷點</span>
       </div>
 
+      <!-- Tier multiplier breakdown -->
+      <div class="multiplier-section">
+        <div class="multiplier-row">
+          <span class="multiplier-label">加成倍數：{{ store.settlement.multiplier.toFixed(1) }}x</span>
+        </div>
+        <div class="multiplier-row">
+          <span class="adjusted-label">實際獲得：{{ store.settlement.adjustedReward }} 點</span>
+        </div>
+      </div>
+
       <button class="dismiss-btn" type="button" @click="dismissed = true">
         確認
       </button>
@@ -150,6 +160,32 @@ const dismissed = ref(false);
 }
 
 .total-value {
+  color: var(--color-gold);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-section);
+}
+
+.multiplier-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) 0;
+  border-top: 1px solid var(--color-glass-border);
+}
+
+.multiplier-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: var(--font-size-body);
+}
+
+.multiplier-label {
+  color: var(--color-gold);
+  font-weight: var(--font-weight-bold);
+}
+
+.adjusted-label {
   color: var(--color-gold);
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-section);

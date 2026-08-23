@@ -144,4 +144,31 @@ describe("SettlementOverlay", () => {
     await wrapper.find(".dismiss-btn").trigger("click");
     expect(wrapper.find(".overlay-backdrop").exists()).toBe(false);
   });
+
+  // fe.2 — multiplier line item
+  it("shows 加成倍數 line with Silver tier 1.2x multiplier", () => {
+    const pinia = createPinia();
+    setActivePinia(pinia);
+    const store = settlementStore();
+    store.settlement.multiplier = 1.2;
+    store.settlement.adjustedReward = 180;
+    const wrapper = mount(SettlementOverlay, {
+      global: { plugins: [pinia, makeRouter()], stubs: { ComboBonus: COMBO_STUB } },
+    });
+    expect(wrapper.text()).toContain("加成倍數：1.2x");
+    expect(wrapper.text()).toContain("實際獲得：180 點");
+  });
+
+  it("shows 加成倍數 line with Bronze tier 1.0x multiplier (always shown)", () => {
+    const pinia = createPinia();
+    setActivePinia(pinia);
+    const store = settlementStore();
+    store.settlement.multiplier = 1.0;
+    store.settlement.adjustedReward = 150;
+    const wrapper = mount(SettlementOverlay, {
+      global: { plugins: [pinia, makeRouter()], stubs: { ComboBonus: COMBO_STUB } },
+    });
+    expect(wrapper.text()).toContain("加成倍數：1.0x");
+    expect(wrapper.text()).toContain("實際獲得：150 點");
+  });
 });
