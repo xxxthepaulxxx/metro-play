@@ -13,7 +13,7 @@ function makeRouter() {
       { path: "/off-peak/game-b", component: { template: "<div />" } },
       { path: "/off-peak/settlement", component: { template: "<div />" } },
       { path: "/module2", component: { template: "<div />" } },
-      { path: "/module3", component: { template: "<div />" } },
+      { path: "/privileges", component: { template: "<div />" } },
       { path: "/module4", component: { template: "<div />" } },
     ],
   });
@@ -48,6 +48,20 @@ describe("App", () => {
     const activeTabs = wrapper.findAll(".tab.active");
     expect(activeTabs).toHaveLength(1);
     expect(activeTabs[0]?.text()).toContain("離峰大作戰");
+  });
+
+  it("tab 3 navigates to /privileges and is active on that route", async () => {
+    const router = makeRouter();
+    await router.push("/privileges");
+    const wrapper = mount(App, {
+      global: { plugins: [router, createPinia()] },
+    });
+    await router.isReady();
+    const activeTabs = wrapper.findAll(".tab.active");
+    expect(activeTabs).toHaveLength(1);
+    expect(activeTabs[0]?.text()).toContain("特權");
+    const tab3 = wrapper.findAll(".tab")[2];
+    expect(tab3?.attributes("href")).toContain("/privileges");
   });
 
   it("particles have pointer-events none", async () => {
