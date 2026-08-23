@@ -22,7 +22,7 @@ Complete inventory of all screens, surfaces, and navigation patterns for the met
 1. **⚔️ 離峰大作戰** — Module 1 Home (always accessible, no auth required initially)
 2. **🎁 盲盒旅行** — Module 2 Mystery Box Travel
 3. **👑 夢幻特權** — Module 3 Dream Privileges
-4. **🗺️ 城市RPG** — Module 4 City RPG (out of scope for PRD v1)
+4. **🗺️ 城市RPG** — Module 4 City RPG Unlock
 
 ---
 
@@ -197,11 +197,16 @@ Navigation model: the global nav tab 3 ("👑 夢幻特權") points to `/privile
 
 ---
 
-## Out-of-Scope Surfaces (For Future Sprints)
+## Module 4 — 城市RPG (City RPG Unlock)
 
-| Surface | Module | Tab | Status |
-|---------|--------|-----|--------|
-| 城市RPG (City RPG) | Module 4 | 🗺️ | Design TBD |
+| path | kind | entry-source | global-nav | auth | component |
+|------|------|--------------|------------|------|-----------|
+| `/rpg` | top-level | global nav tab 4 "🗺️ 城市RPG" | yes | public | `CityRpgMapView` |
+| `/rpg/district/:id` | detail-child | tap DistrictCard on `/rpg` | no | public | `DistrictDetailView` |
+
+Navigation model: Global nav tab 4 ("🗺️ 城市RPG") links to `/rpg`. The map view displays a vertical scrolling list of DistrictCards. Each card taps to `/rpg/district/:id`. An overall progress summary hero sits at the top of `/rpg`. UnlockBurstAnimation overlay appears on `/rpg` on district completion (not a separate route). Back navigation from `/rpg/district/:id` returns to `/rpg`. No orphaned surfaces.
+
+---
 
 ---
 
