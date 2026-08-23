@@ -10,3 +10,7 @@
 | 累積點數 | Cumulative Points | Lifetime total of off-peak points earned across all sessions. Only increases (no decay). Sole input to tier evaluation. |
 | 被動倍率 | Passive Multiplier | Per-tier scaling factor applied automatically to session rewards at settlement. |
 | 升級 | Tier-Up | The event of crossing a tier threshold. Triggers the unlock animation. |
+| 城市 RPG 解鎖 | City RPG Unlock | A progression system where riders unlock Taipei districts on an adventure map by visiting a threshold number of stations within each district. Core mechanic of Module 4. |
+| 冒險地圖 | Adventure Map | The top-level UI showing all curated Taipei districts in a grid, with locked/unlocked visual states and overall progress. |
+| 區域解鎖 | District Unlock | The event of reaching the station-visit threshold in a district, triggering the unlock animation and bonus point reward. |
+| 站點造訪 | Station Visit | A recorded visit to an MRT station within a district. In the hackathon prototype, all visits are mock data. |
