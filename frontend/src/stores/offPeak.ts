@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { settleGame, verifyGateTap } from "../api/mockApi";
 import { getOffPeakWindow } from "../api/mockData";
+import { useLoyaltyTierStore } from "./loyaltyTier";
 import { useWalletStore } from "./wallet";
 
 interface ActivityLogEntry {
@@ -30,6 +31,8 @@ interface OffPeakState {
     pledgeReward: number;
     guessReward: number;
     badge: string | null;
+    multiplier: number;
+    adjustedReward: number;
   };
   offPeakWindow: {
     start: string;
@@ -64,6 +67,8 @@ export const useOffPeakStore = defineStore("off-peak-store", {
       pledgeReward: 0,
       guessReward: 0,
       badge: null,
+      multiplier: 1,
+      adjustedReward: 0,
     },
     offPeakWindow: {
       start: initialWindow.start,
@@ -146,18 +151,23 @@ export const useOffPeakStore = defineStore("off-peak-store", {
         return;
       }
       const wallet = useWalletStore();
+      const loyaltyTierStore = useLoyaltyTierStore();
       const pledgeId = this._pledgeId ?? "mock-pledge-id";
       const predictionId = this.prediction.submitted
         ? (this._predictionId ?? "mock-prediction-id")
         : undefined;
       const response = await settleGame(pledgeId, predictionId);
+      const adjustedReward = Math.round(response.totalReward * loyaltyTierStore.multiplier);
       this.settlement.done = true;
       this.settlement.combo = response.combo;
       this.settlement.totalReward = response.totalReward;
       this.settlement.pledgeReward = response.gameA.reward;
       this.settlement.guessReward = response.gameB.reward;
       this.settlement.badge = response.badge;
-      wallet.credit(response.totalReward);
+      this.settlement.multiplier = loyaltyTierStore.multiplier;
+      this.settlement.adjustedReward = adjustedReward;
+      wallet.credit(adjustedReward);
+      loyaltyTierStore.addPoints(adjustedReward);
       if (this.prediction.submitted && response.gameB.outcome !== "skipped") {
         this.prediction.outcome = response.gameB.outcome;
       }
@@ -172,6 +182,8 @@ export const useOffPeakStore = defineStore("off-peak-store", {
         {
           success: true,
           totalReward: response.totalReward,
+          adjustedReward,
+          multiplier: loyaltyTierStore.multiplier,
           combo: response.combo,
           badge: response.badge,
           newBalance: wallet.balance,
@@ -198,6 +210,8 @@ export const useOffPeakStore = defineStore("off-peak-store", {
         pledgeReward: 0,
         guessReward: 0,
         badge: null,
+        multiplier: 1,
+        adjustedReward: 0,
       };
       this._pledgeId = null;
       this._predictionId = null;
