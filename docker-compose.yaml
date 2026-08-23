@@ -8,4 +8,5 @@ services:
     image: metro-play-frontend:dev
     ports:
       - "${FRONTEND_PORT:-8000}:80"
+      - "5173:80"
     restart: unless-stopped
