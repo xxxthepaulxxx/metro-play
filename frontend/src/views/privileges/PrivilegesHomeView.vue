@@ -6,12 +6,9 @@
     </header>
 
     <TierShieldCard />
-<<<<<<< HEAD
     <CurrentPerksCard />
     <NextTierCard />
-=======
     <UnlockAnimation />
->>>>>>> 53bfd8e (feat(loyalty-tier): UnlockAnimation one-shot tier reveal — Slice #31)
   </div>
 </template>
 
