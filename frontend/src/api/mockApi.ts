@@ -1,4 +1,11 @@
-import { DESTINATIONS, type Destination, getOffPeakWindow, getRidershipData } from "./mockData";
+import {
+  DESTINATIONS,
+  type Destination,
+  DISTRICTS,
+  getOffPeakWindow,
+  getRidershipData,
+  type RpgDistrict,
+} from "./mockData";
 
 export interface CommitmentResponse {
   pledgeId: string;
@@ -205,6 +212,18 @@ export async function scanMerchant(
     discountText: dest?.discountText ?? "特別優惠",
     bonusPoints: dest?.bonusPoints ?? 80,
   };
+}
+
+// ── Module 4: City RPG ─────────────────────────────────────────────────────
+
+export async function fetchDistricts(): Promise<RpgDistrict[]> {
+  await delay(200);
+  return DISTRICTS.map((d) => ({ ...d, stations: [...d.stations] }));
+}
+
+export async function simulateVisit(_stationId: string): Promise<void> {
+  await delay(300);
+  // In production, POST to the tap-in API. State mutation handled by the store action.
 }
 
 // ── Module 1: Settlement ───────────────────────────────────────────────────

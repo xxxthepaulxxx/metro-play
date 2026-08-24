@@ -1,3 +1,102 @@
+// ── Module 4: City RPG ─────────────────────────────────────────────────────
+
+export interface RpgStation {
+  id: string;
+  name: string;
+}
+
+export interface RpgDistrict {
+  id: string;
+  name: string;
+  stations: RpgStation[];
+  threshold: number;
+  bonusPoints: number;
+}
+
+export const DISTRICTS: RpgDistrict[] = [
+  {
+    id: "xinyi",
+    name: "信義探險區",
+    stations: [
+      { id: "xinyi-city-hall", name: "市政府" },
+      { id: "xinyi-taipei-101", name: "台北101/世貿" },
+      { id: "xinyi-xiangshan", name: "象山" },
+      { id: "xinyi-sun-yat-sen", name: "國父紀念館" },
+      { id: "xinyi-zhongxiao-dunhua", name: "忠孝敦化" },
+      { id: "xinyi-zhongxiao-fuxing", name: "忠孝復興" },
+    ],
+    threshold: 4,
+    bonusPoints: 50,
+  },
+  {
+    id: "daan",
+    name: "大安文青區",
+    stations: [
+      { id: "daan-daan", name: "大安" },
+      { id: "daan-technology-building", name: "科技大樓" },
+      { id: "daan-liuzhangli", name: "六張犁" },
+      { id: "daan-xinhai", name: "辛亥" },
+      { id: "daan-muzha", name: "木柵" },
+      { id: "daan-dongmen", name: "東門" },
+      { id: "daan-guting", name: "古亭" },
+    ],
+    threshold: 5,
+    bonusPoints: 50,
+  },
+  {
+    id: "zhongshan",
+    name: "中山潮流區",
+    stations: [
+      { id: "zhongshan-zhongshan", name: "中山" },
+      { id: "zhongshan-shuanglian", name: "雙連" },
+      { id: "zhongshan-xingtian", name: "行天宮" },
+      { id: "zhongshan-songjiang-nanjing", name: "松江南京" },
+      { id: "zhongshan-nanjing-fuxing", name: "南京復興" },
+    ],
+    threshold: 3,
+    bonusPoints: 40,
+  },
+  {
+    id: "beitou",
+    name: "北投溫泉區",
+    stations: [
+      { id: "beitou-beitou", name: "北投" },
+      { id: "beitou-xinbeitou", name: "新北投" },
+      { id: "beitou-qilian", name: "奇岩" },
+      { id: "beitou-fuming", name: "復興崗" },
+    ],
+    threshold: 3,
+    bonusPoints: 40,
+  },
+  {
+    id: "banqiao",
+    name: "板橋生活圈",
+    stations: [
+      { id: "banqiao-banqiao", name: "板橋" },
+      { id: "banqiao-jiangzicui", name: "江子翠" },
+      { id: "banqiao-xinpu", name: "新埔" },
+      { id: "banqiao-tucheng", name: "土城" },
+      { id: "banqiao-yongning", name: "永寧" },
+    ],
+    threshold: 4,
+    bonusPoints: 45,
+  },
+  {
+    id: "tamsui",
+    name: "淡水漫遊區",
+    stations: [
+      { id: "tamsui-tamsui", name: "淡水" },
+      { id: "tamsui-hongshulin", name: "紅樹林" },
+      { id: "tamsui-zhuwei", name: "竹圍" },
+      { id: "tamsui-danfeng", name: "淡金/鄧公" },
+    ],
+    threshold: 3,
+    bonusPoints: 40,
+  },
+];
+
+// ── Module 1 ────────────────────────────────────────────────────────────────
+
 export type MrtLine = "wenhu" | "bannan";
 
 export interface Destination {
