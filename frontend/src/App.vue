@@ -49,7 +49,7 @@ const tabs = [
     ],
   },
   { label: "👑 夢幻特權", to: "/privileges", activePaths: ["/privileges"] },
-  { label: "🗺️ 城市RPG", to: "/module4", activePaths: ["/module4"] },
+  { label: "🗺️ 城市RPG", to: "/rpg", activePaths: ["/rpg"] },
 ] as const;
 
 type Tab = (typeof tabs)[number];

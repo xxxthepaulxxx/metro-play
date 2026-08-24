@@ -60,6 +60,14 @@
   --duration-tier-unlock-bounce: 400ms;
   --duration-tier-glow-pulse: 600ms;
 
+  /* Module 4 — City RPG accent */
+  --color-rpg-accent: #ff8f00;
+  --color-rpg-accent-dim: rgba(255, 143, 0, 0.12);
+  --color-rpg-accent-border: rgba(255, 143, 0, 0.35);
+  --color-rpg-accent-glow: rgba(255, 143, 0, 0.5);
+  --duration-rpg-unlock-bounce: 400ms;
+  --duration-rpg-glow-burst: 600ms;
+
   /* Motion */
   --duration-fast: 0.15s;
   --duration-normal: 0.2s;

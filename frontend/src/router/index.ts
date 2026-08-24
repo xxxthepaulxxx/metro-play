@@ -44,8 +44,12 @@ const router = createRouter({
       component: () => import("../views/privileges/PrivilegesHomeView.vue"),
     },
     {
-      path: "/module4",
-      component: () => import("../views/Module4Placeholder.vue"),
+      path: "/rpg",
+      component: () => import("../views/rpg/CityRpgMapView.vue"),
+    },
+    {
+      path: "/rpg/district/:id",
+      component: () => import("../views/rpg/DistrictDetailView.vue"),
     },
     {
       path: "/:pathMatch(.*)*",
