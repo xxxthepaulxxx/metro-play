@@ -12,7 +12,7 @@ A gamified points app set in the Taipei Metro, turning off-peak commuting into a
 > **評審請直接開啟以下連結，無需安裝任何環境。**
 > **Judges: open the link below — no setup required.**
 
-🔗 **https://xxxthepaulxxx.github.io/metro-play/** *(replace with your deployed URL)*
+🔗 **https://xxxthepaulxxx.github.io/metro-play/**
 
 建議使用手機或開啟瀏覽器的 **手機模擬模式（375 × 812）**，體驗最佳。
 Best viewed on mobile or with browser DevTools set to **375 × 812 (iPhone viewport)**.
